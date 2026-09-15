@@ -1,7 +1,7 @@
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { ProductCard } from "@/components/product-card";
-import { getStorefront, type Product } from "@/lib/shopify";
+import { getStorefront } from "@/lib/shopify";
 
 const CATEGORIES = [
   {
@@ -45,7 +45,7 @@ export default async function Home() {
     console.error("SHOPIFY ERROR:", error);
     throw error;
   }
-  const products: Product[] = data?.products.nodes || [];
+  const products = data?.products.nodes || [];
 
   return (
     <main id="top" className="min-h-screen bg-paper">
@@ -120,15 +120,14 @@ export default async function Home() {
         </div>
         <div className="grid grid-cols-2 gap-x-4 gap-y-12 md:grid-cols-4 md:gap-x-6">
           {products.length ? (
-            products
-              .slice(0, 8)
-              .map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))
+            products.map((product) => (
+              <div key={product.id} className="border p-4">
+                <p className="font-bold">{product.title}</p>
+                <p className="text-sm">{product.handle}</p>
+              </div>
+            ))
           ) : (
-            <div className="col-span-full rounded-[var(--radius-card)] border border-line bg-card py-20 text-center text-sm text-ink-soft">
-              The catalog is being prepared.
-            </div>
+            <div className="col-span-full">No hay productos.</div>
           )}
         </div>
       </section>

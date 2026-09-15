@@ -5,14 +5,31 @@ async function shopifyFetch<T>(query: string, variables?: Record<string, unknown
   if (!process.env.SHOPIFY_STORE_DOMAIN || !token) throw new Error("Shopify no está configurado")
   const response = await fetch(endpoint, {
     method: "POST",
-    headers: { "Content-Type": "application/json", "X-Shopify-Storefront-Access-Token": token },
+    headers: {
+      "Content-Type": "application/json",
+      "X-Shopify-Storefront-Access-Token": token,
+    },
     body: JSON.stringify({ query, variables }),
-    // Cart calls must never be cached; catalog data can revalidate periodically.
-    ...(cache === "cart" ? { cache: "no-store" as const } : { next: { revalidate: 60 } }),
+    ...(cache === "cart"
+      ? { cache: "no-store" as const }
+      : { next: { revalidate: 60 } }),
   })
-  if (!response.ok) throw new Error("No se pudo conectar con Shopify")
+
   const payload = await response.json()
-  if (payload.errors?.length) throw new Error(payload.errors[0].message)
+
+  console.log("SHOPIFY STATUS:", response.status)
+  console.log("SHOPIFY RESPONSE:", JSON.stringify(payload, null, 2))
+
+  if (!response.ok) {
+    throw new Error(
+      `Shopify HTTP ${response.status}: ${JSON.stringify(payload)}`
+    )
+  }
+
+  if (payload.errors?.length) {
+    throw new Error(payload.errors[0].message)
+  }
+
   return payload.data
 }
 
