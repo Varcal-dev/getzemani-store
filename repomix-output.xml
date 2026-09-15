@@ -1,0 +1,1698 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+app/
+  products/
+    [handle]/
+      page.tsx
+  thank-you/
+    page.tsx
+  globals.css
+  layout.tsx
+  page.tsx
+assets/
+  storefront-graphql_2026-07.json.br
+components/
+  cart-drawer.tsx
+  product-card.tsx
+  product-detail.tsx
+  site-footer.tsx
+  site-header.tsx
+context/
+  cart-context.tsx
+data/
+  supported-versions-schema.json
+lib/
+  cart-actions.ts
+  shopify.ts
+.env.local
+next-env.d.ts
+next.config.js
+package.json
+postcss.config.mjs
+README.md
+tsconfig.json
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="app/products/[handle]/page.tsx">
+import { notFound } from "next/navigation"
+import { SiteHeader } from "@/components/site-header"
+import { SiteFooter } from "@/components/site-footer"
+import { ProductCard } from "@/components/product-card"
+import { ProductDetail } from "@/components/product-detail"
+import { getProduct, getRelatedProducts } from "@/lib/shopify"
+
+export default async function ProductPage({ params }: { params: Promise<{ handle: string }> }) {
+  const { handle } = await params
+  const product = await getProduct(handle).catch(() => null)
+  if (!product) notFound()
+
+  const related = await getRelatedProducts(handle).catch(() => [])
+
+  return (
+    <main id="top" className="min-h-screen bg-paper">
+      <SiteHeader />
+      <section className="mx-auto max-w-[1320px] px-5 py-14 lg:px-10 lg:py-20">
+        <ProductDetail product={product} />
+      </section>
+
+      {related.length > 0 && (
+        <section className="border-t border-line bg-card/60 py-20">
+          <div className="mx-auto max-w-[1320px] px-5 lg:px-10">
+            <h2 className="mb-10 font-serif text-3xl text-ink lg:text-4xl">You may also like.</h2>
+            <div className="grid grid-cols-2 gap-x-4 gap-y-12 md:grid-cols-4 md:gap-x-6">
+              {related.map(p => <ProductCard key={p.id} product={p} />)}
+            </div>
+          </div>
+        </section>
+      )}
+
+      <SiteFooter />
+    </main>
+  )
+}
+</file>
+
+<file path="app/thank-you/page.tsx">
+import { SiteHeader } from "@/components/site-header"
+import { SiteFooter } from "@/components/site-footer"
+
+export default async function ThankYouPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ order?: string; email?: string }>
+}) {
+  const { order, email } = await searchParams
+
+  return (
+    <main id="top" className="min-h-screen bg-paper">
+      <SiteHeader />
+
+      <section className="mx-auto flex max-w-2xl flex-col items-center px-5 py-24 text-center lg:py-32">
+        <div className="organic-mask flex h-20 w-20 items-center justify-center bg-olive-pale">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-olive-deep">
+            <path d="M4 12.5 9.5 18 20 6" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </div>
+
+        <h1 className="mt-8 font-serif text-[clamp(2.25rem,4.5vw,3.5rem)] leading-tight text-ink">
+          Thank you. Your ritual is on its way.
+        </h1>
+
+        <p className="mt-5 max-w-md text-sm leading-6 text-ink-soft">
+          {email
+            ? `We've sent a confirmation to ${email} with everything you need to track your order.`
+            : "We've sent a confirmation email with everything you need to track your order."}
+        </p>
+
+        {order && (
+          <div className="mt-8 rounded-[var(--radius-card)] border border-line bg-card px-8 py-5">
+            <p className="text-xs text-ink-soft">Order number</p>
+            <p className="mt-1 font-serif text-xl text-ink">{order}</p>
+          </div>
+        )}
+
+        <a
+          href="/#shop"
+          className="mt-10 inline-block rounded-full bg-olive-deep px-7 py-3.5 text-sm text-paper transition-colors hover:bg-olive"
+        >
+          Continue exploring
+        </a>
+      </section>
+
+      <SiteFooter />
+    </main>
+  )
+}
+</file>
+
+<file path="app/globals.css">
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Karla:wght@400;500;600;700&display=swap');
+@import 'tailwindcss';
+
+@theme inline {
+  --font-serif: 'Fraunces', serif;
+  --font-sans: 'Karla', sans-serif;
+
+  --color-paper: #f1efe4;
+  --color-paper-deep: #e9e4d3;
+  --color-ink: #2a2820;
+  --color-ink-soft: #6b6a5e;
+  --color-olive: #5f6b4c;
+  --color-olive-deep: #333c28;
+  --color-olive-pale: #dbe0cd;
+  --color-clay: #b17f63;
+  --color-clay-pale: #e9dccf;
+  --color-line: #dcd6c4;
+  --color-card: #f8f6ee;
+
+  --radius-card: 1.25rem;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: 'Karla', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+button, a { -webkit-tap-highlight-color: transparent; }
+button { cursor: pointer; font-family: inherit; }
+::selection { background: var(--color-olive-pale); color: var(--color-olive-deep); }
+
+:focus-visible {
+  outline: 2px solid var(--color-olive);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Single orchestrated hero entrance */
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.hero-rise > * { animation: rise-in 0.7s cubic-bezier(.2,.7,.2,1) both; }
+.hero-rise > *:nth-child(2) { animation-delay: 0.08s; }
+.hero-rise > *:nth-child(3) { animation-delay: 0.16s; }
+
+/* Organic mask for hero imagery -- a soft, single asymmetric curve rather than a hard rectangle */
+.organic-mask {
+  border-radius: 3rem 1.25rem 3rem 1.25rem / 4rem 1.5rem 4rem 1.5rem;
+}
+
+.product-image { transition: transform .7s cubic-bezier(.2,.8,.2,1); }
+.product-card:hover .product-image { transform: scale(1.035); }
+
+.tray {
+  transition: transform .45s cubic-bezier(.2,.8,.2,1), opacity .3s ease;
+}
+
+.underline-grow { position: relative; }
+.underline-grow::after {
+  content: '';
+  position: absolute; left: 0; bottom: -3px;
+  width: 100%; height: 1px; background: currentColor;
+  transform: scaleX(0); transform-origin: right;
+  transition: transform .35s ease;
+}
+.underline-grow:hover::after { transform: scaleX(1); transform-origin: left; }
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+</file>
+
+<file path="app/layout.tsx">
+import type { Metadata } from "next"
+import "./globals.css"
+import { CartProvider } from "@/context/cart-context"
+import { CartDrawer } from "@/components/cart-drawer"
+
+export const metadata: Metadata = {
+  title: "Getzemani — Skin, body, and home rituals",
+  description: "Skincare, wellness, movement, and home goods for a quieter kind of self-care.",
+}
+
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  return (
+    <html lang="en" className="bg-paper">
+      <body>
+        <CartProvider>
+          {children}
+          <CartDrawer />
+        </CartProvider>
+      </body>
+    </html>
+  )
+}
+</file>
+
+<file path="app/page.tsx">
+import { SiteHeader } from "@/components/site-header"
+import { SiteFooter } from "@/components/site-footer"
+import { ProductCard } from "@/components/product-card"
+import { getStorefront, type Product } from "@/lib/shopify"
+
+const CATEGORIES = [
+  { name: "Skin", copy: "Cleansers, serums, and tools for a calmer routine.", image: "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=800&q=80" },
+  { name: "Body", copy: "Everyday rituals for skin, muscles, and rest.", image: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=800&q=80" },
+  { name: "Movement", copy: "Light equipment for a body that likes to move.", image: "https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=800&q=80" },
+  { name: "Home", copy: "Small objects that make a room feel like a pause.", image: "https://images.unsplash.com/photo-1517705008128-361805f42e86?auto=format&fit=crop&w=800&q=80" },
+]
+
+const VALUES = [
+  "Free returns within 30 days",
+  "Ingredients you can pronounce",
+  "Carbon-neutral shipping",
+  "Real people, real support",
+]
+
+export default async function Home() {
+  let data: Awaited<ReturnType<typeof getStorefront>> | null = null
+  try { data = await getStorefront() } catch { data = null }
+  const products: Product[] = data?.products.nodes || []
+
+  return (
+    <main id="top" className="min-h-screen bg-paper">
+      <SiteHeader />
+
+      {/* Hero */}
+      <section className="mx-auto max-w-[1320px] px-5 pb-20 pt-14 lg:px-10 lg:pb-28 lg:pt-20">
+        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[1fr_1fr]">
+          <div className="hero-rise">
+            <h1 className="max-w-lg text-balance font-serif text-[clamp(2.75rem,5.5vw,4.5rem)] font-normal leading-[1.04] tracking-tight text-ink">
+              Care, at the pace of a garden.
+            </h1>
+            <p className="mt-6 max-w-sm text-base leading-7 text-ink-soft">
+              Skincare, wellness, and home rituals designed for people who&apos;d rather feel better than do more.
+            </p>
+            <a
+              href="#shop"
+              className="mt-9 inline-block rounded-full bg-olive-deep px-7 py-3.5 text-sm text-paper transition-colors hover:bg-olive"
+            >
+              Shop the collection
+            </a>
+          </div>
+          <div className="organic-mask relative aspect-[4/5] overflow-hidden lg:aspect-[5/6]">
+            <img
+              src="https://images.unsplash.com/photo-1600334129128-685c5582fd35?auto=format&fit=crop&w=1200&q=85"
+              alt="Ritual de cuidado personal con productos naturales"
+              className="h-full w-full object-cover"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Categories */}
+      <section id="categories" className="border-y border-line bg-card/60 py-20">
+        <div className="mx-auto max-w-[1320px] px-5 lg:px-10">
+          <h2 className="max-w-md font-serif text-3xl leading-tight text-ink lg:text-4xl">Find your ritual.</h2>
+          <div className="mt-10 grid grid-cols-2 gap-4 lg:grid-cols-4">
+            {CATEGORIES.map(cat => (
+              <a key={cat.name} href="#shop" className="group block">
+                <div className="aspect-[4/5] overflow-hidden rounded-[var(--radius-card)]">
+                  <img
+                    src={cat.image}
+                    alt={cat.name}
+                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    loading="lazy"
+                  />
+                </div>
+                <h3 className="mt-3 text-sm font-medium text-ink">{cat.name}</h3>
+                <p className="mt-1 text-xs leading-5 text-ink-soft">{cat.copy}</p>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Product grid */}
+      <section id="shop" className="mx-auto max-w-[1320px] px-5 py-20 lg:px-10">
+        <div className="mb-10 flex items-end justify-between gap-4">
+          <h2 className="font-serif text-3xl text-ink lg:text-4xl">Curated for you.</h2>
+        </div>
+        <div className="grid grid-cols-2 gap-x-4 gap-y-12 md:grid-cols-4 md:gap-x-6">
+          {products.length ? (
+            products.slice(0, 8).map(product => <ProductCard key={product.id} product={product} />)
+          ) : (
+            <div className="col-span-full rounded-[var(--radius-card)] border border-line bg-card py-20 text-center text-sm text-ink-soft">
+              The catalog is being prepared.
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Value strip */}
+      <section className="border-y border-line">
+        <div className="mx-auto grid max-w-[1320px] grid-cols-2 lg:grid-cols-4">
+          {VALUES.map(value => (
+            <div key={value} className="border-r border-line px-5 py-8 last:border-r-0 lg:px-10">
+              <p className="text-sm leading-6 text-ink">{value}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Editorial pull-quote */}
+      <section className="bg-olive-deep py-24">
+        <div className="mx-auto max-w-2xl px-5 text-center lg:px-10">
+          <p className="font-serif text-[clamp(1.75rem,3.5vw,2.75rem)] italic leading-tight text-paper">
+            Most wellness brands sell you more to do. We&apos;d rather sell you less to think about.
+          </p>
+        </div>
+      </section>
+
+      <SiteFooter />
+    </main>
+  )
+}
+</file>
+
+<file path="components/cart-drawer.tsx">
+"use client"
+
+import { useCart } from "@/context/cart-context"
+
+function formatMoney(amount: string, currencyCode: string) {
+  return new Intl.NumberFormat("en-US", { style: "currency", currency: currencyCode }).format(Number(amount))
+}
+
+export function CartDrawer() {
+  const { cart, isOpen, isLoading, closeCart, updateItem, removeItem } = useCart()
+  const lines = cart?.lines.nodes ?? []
+
+  return (
+    <>
+      <div
+        className={`fixed inset-0 z-50 bg-ink/30 transition-opacity duration-300 ${isOpen ? "opacity-100" : "pointer-events-none opacity-0"}`}
+        onClick={closeCart}
+        aria-hidden="true"
+      />
+      <aside
+        className={`tray fixed right-0 top-0 z-50 flex h-full w-full max-w-md flex-col bg-paper shadow-2xl ${isOpen ? "translate-x-0" : "translate-x-full"}`}
+        role="dialog"
+        aria-label="Tu bolsa"
+      >
+        <div className="flex items-center justify-between border-b border-line px-6 py-5">
+          <h2 className="font-serif text-2xl text-ink">Your bag</h2>
+          <button onClick={closeCart} aria-label="Cerrar bolsa" className="text-ink-soft hover:text-ink">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d="M5 5l14 14M19 5 5 19" />
+            </svg>
+          </button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto px-6 py-6">
+          {lines.length === 0 ? (
+            <p className="pt-10 text-center text-sm leading-6 text-ink-soft">
+              Your bag is empty. Time to start a ritual.
+            </p>
+          ) : (
+            <ul className="flex flex-col gap-6">
+              {lines.map(line => (
+                <li key={line.id} className="flex gap-4">
+                  <div className="h-24 w-20 shrink-0 overflow-hidden rounded-lg bg-card">
+                    {line.merchandise.product.featuredImage && (
+                      <img
+                        src={line.merchandise.product.featuredImage.url}
+                        alt={line.merchandise.product.featuredImage.altText || line.merchandise.product.title}
+                        className="h-full w-full object-cover"
+                      />
+                    )}
+                  </div>
+                  <div className="flex flex-1 flex-col justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-ink">{line.merchandise.product.title}</p>
+                      {line.merchandise.title !== "Default Title" && (
+                        <p className="mt-0.5 text-xs text-ink-soft">{line.merchandise.title}</p>
+                      )}
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3 rounded-full border border-line px-2 py-1">
+                        <button
+                          className="px-1 text-ink-soft hover:text-ink disabled:opacity-40"
+                          disabled={isLoading}
+                          onClick={() => updateItem(line.id, line.quantity - 1)}
+                          aria-label="Reducir cantidad"
+                        >−</button>
+                        <span className="w-4 text-center text-xs">{line.quantity}</span>
+                        <button
+                          className="px-1 text-ink-soft hover:text-ink disabled:opacity-40"
+                          disabled={isLoading}
+                          onClick={() => updateItem(line.id, line.quantity + 1)}
+                          aria-label="Aumentar cantidad"
+                        >+</button>
+                      </div>
+                      <p className="text-sm text-ink">{formatMoney(line.merchandise.price.amount, line.merchandise.price.currencyCode)}</p>
+                    </div>
+                    <button
+                      className="mt-1 self-start text-xs text-ink-soft underline-offset-2 hover:text-clay hover:underline"
+                      onClick={() => removeItem(line.id)}
+                      disabled={isLoading}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        {lines.length > 0 && cart && (
+          <div className="border-t border-line px-6 py-6">
+            <div className="mb-1 flex items-center justify-between text-sm">
+              <span className="text-ink-soft">Subtotal</span>
+              <span className="text-ink">{formatMoney(cart.cost.subtotalAmount.amount, cart.cost.subtotalAmount.currencyCode)}</span>
+            </div>
+            <p className="mb-5 text-xs text-ink-soft">Taxes and shipping calculated at checkout.</p>
+            <a
+              href={cart.checkoutUrl}
+              className="block w-full rounded-full bg-olive-deep py-3.5 text-center text-sm text-paper transition-colors hover:bg-olive"
+            >
+              Checkout
+            </a>
+          </div>
+        )}
+      </aside>
+    </>
+  )
+}
+</file>
+
+<file path="components/product-card.tsx">
+"use client"
+
+import type { Product } from "@/lib/shopify"
+import { useCart } from "@/context/cart-context"
+
+function formatPrice(product: Product) {
+  const { amount, currencyCode } = product.priceRange.minVariantPrice
+  return new Intl.NumberFormat("en-US", { style: "currency", currency: currencyCode }).format(Number(amount))
+}
+
+export function ProductCard({ product }: { product: Product }) {
+  const { addItem, isLoading } = useCart()
+  const firstVariant = product.variants.nodes[0]
+
+  return (
+    <article className="product-card group flex min-w-0 flex-col">
+      <a href={`/products/${product.handle}`} className="block overflow-hidden rounded-[var(--radius-card)] bg-card">
+        <div className="relative aspect-[4/5] overflow-hidden">
+          {product.featuredImage ? (
+            <img
+              className="product-image h-full w-full object-cover"
+              src={product.featuredImage.url}
+              alt={product.featuredImage.altText || product.title}
+              loading="lazy"
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center text-xs text-ink-soft">Getzemani</div>
+          )}
+        </div>
+      </a>
+      <div className="flex items-start justify-between gap-4 pt-4">
+        <div className="min-w-0">
+          <a href={`/products/${product.handle}`}>
+            <h3 className="text-sm font-medium leading-snug text-ink hover:text-olive">{product.title}</h3>
+          </a>
+          <p className="mt-1 line-clamp-2 text-xs leading-5 text-ink-soft">{product.description}</p>
+        </div>
+        <p className="shrink-0 text-sm text-ink">{formatPrice(product)}</p>
+      </div>
+      {firstVariant && (
+        <button
+          className="mt-3 self-start text-xs text-olive underline-grow disabled:opacity-40"
+          disabled={isLoading || !firstVariant.availableForSale}
+          onClick={() => addItem(firstVariant.id, 1)}
+        >
+          {firstVariant.availableForSale ? "Add to bag" : "Sold out"}
+        </button>
+      )}
+    </article>
+  )
+}
+</file>
+
+<file path="components/product-detail.tsx">
+"use client"
+
+import { useMemo, useState } from "react"
+import type { Product } from "@/lib/shopify"
+import { useCart } from "@/context/cart-context"
+
+function formatMoney(amount: string, currencyCode: string) {
+  return new Intl.NumberFormat("en-US", { style: "currency", currency: currencyCode }).format(Number(amount))
+}
+
+export function ProductDetail({ product }: { product: Product }) {
+  const { addItem, isLoading } = useCart()
+  const images = product.images?.nodes?.length ? product.images.nodes : (product.featuredImage ? [product.featuredImage] : [])
+  const [activeImage, setActiveImage] = useState(0)
+
+  const options = product.options?.filter(o => o.values.length > 1 || o.name.toLowerCase() !== "title") ?? []
+  const [selected, setSelected] = useState<Record<string, string>>(() => {
+    const initial: Record<string, string> = {}
+    options.forEach(o => { initial[o.name] = o.values[0] })
+    return initial
+  })
+
+  const variant = useMemo(() => {
+    return product.variants.nodes.find(v =>
+      v.selectedOptions.every(so => selected[so.name] === so.value)
+    ) ?? product.variants.nodes[0]
+  }, [product.variants.nodes, selected])
+
+  const [justAdded, setJustAdded] = useState(false)
+
+  async function handleAdd() {
+    if (!variant) return
+    await addItem(variant.id, 1)
+    setJustAdded(true)
+    setTimeout(() => setJustAdded(false), 2000)
+  }
+
+  return (
+    <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-16">
+      <div>
+        <div className="organic-mask aspect-[4/5] overflow-hidden bg-card">
+          {images[activeImage] ? (
+            <img
+              src={images[activeImage].url}
+              alt={images[activeImage].altText || product.title}
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center text-xs text-ink-soft">Getzemani</div>
+          )}
+        </div>
+        {images.length > 1 && (
+          <div className="mt-4 flex gap-3">
+            {images.map((img, i) => (
+              <button
+                key={img.url}
+                onClick={() => setActiveImage(i)}
+                className={`h-16 w-14 overflow-hidden rounded-lg border ${i === activeImage ? "border-olive" : "border-line"}`}
+                aria-label={`Ver imagen ${i + 1}`}
+              >
+                <img src={img.url} alt="" className="h-full w-full object-cover" />
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="lg:pt-4">
+        <h1 className="font-serif text-3xl leading-tight text-ink lg:text-4xl">{product.title}</h1>
+        {variant && (
+          <p className="mt-3 text-lg text-ink-soft">{formatMoney(variant.price.amount, variant.price.currencyCode)}</p>
+        )}
+
+        <p className="mt-6 max-w-md text-sm leading-6 text-ink-soft">{product.description}</p>
+
+        {options.map(option => (
+          <div key={option.name} className="mt-7">
+            <p className="mb-2 text-xs text-ink-soft">{option.name}</p>
+            <div className="flex flex-wrap gap-2">
+              {option.values.map(value => (
+                <button
+                  key={value}
+                  onClick={() => setSelected(prev => ({ ...prev, [option.name]: value }))}
+                  className={`rounded-full border px-4 py-2 text-xs transition-colors ${
+                    selected[option.name] === value
+                      ? "border-olive-deep bg-olive-deep text-paper"
+                      : "border-line text-ink-soft hover:border-ink-soft"
+                  }`}
+                >
+                  {value}
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
+
+        <button
+          onClick={handleAdd}
+          disabled={isLoading || !variant?.availableForSale}
+          className="mt-9 w-full rounded-full bg-olive-deep py-3.5 text-sm text-paper transition-colors hover:bg-olive disabled:opacity-40 sm:w-auto sm:px-10"
+        >
+          {!variant?.availableForSale ? "Sold out" : justAdded ? "Added to bag" : "Add to bag"}
+        </button>
+      </div>
+    </div>
+  )
+}
+</file>
+
+<file path="components/site-footer.tsx">
+export function SiteFooter() {
+  return (
+    <footer className="border-t border-line bg-olive-deep text-paper">
+      <div className="mx-auto flex max-w-[1320px] flex-col gap-10 px-5 py-14 md:flex-row md:items-start md:justify-between lg:px-10">
+        <div className="max-w-xs">
+          <p className="font-serif text-2xl italic">Getzemani</p>
+          <p className="mt-3 text-sm leading-6 text-paper/70">
+            Skincare, wellness, and home rituals for people who&apos;d rather feel better than do more.
+          </p>
+        </div>
+        <div className="flex gap-14">
+          <div className="flex flex-col gap-3 text-sm text-paper/80">
+            <p className="text-paper/50">Shop</p>
+            <a href="/#categories" className="hover:text-paper">Skin</a>
+            <a href="/#categories" className="hover:text-paper">Body</a>
+            <a href="/#categories" className="hover:text-paper">Movement</a>
+            <a href="/#categories" className="hover:text-paper">Home</a>
+          </div>
+          <div className="flex flex-col gap-3 text-sm text-paper/80">
+            <p className="text-paper/50">Getzemani</p>
+            <a href="#top" className="hover:text-paper">About</a>
+            <a href="#top" className="hover:text-paper">Contact</a>
+            <a href="#top" className="hover:text-paper">Instagram</a>
+          </div>
+        </div>
+      </div>
+      <div className="mx-auto max-w-[1320px] border-t border-paper/10 px-5 py-5 text-xs text-paper/50 lg:px-10">
+        © 2026 Getzemani
+      </div>
+    </footer>
+  )
+}
+</file>
+
+<file path="components/site-header.tsx">
+"use client"
+
+import { useState } from "react"
+import { useCart } from "@/context/cart-context"
+
+const NAV_ITEMS = [
+  { label: "Skin", href: "/#categories" },
+  { label: "Body", href: "/#categories" },
+  { label: "Movement", href: "/#categories" },
+  { label: "Home", href: "/#categories" },
+]
+
+export function SiteHeader() {
+  const [open, setOpen] = useState(false)
+  const { cart, openCart } = useCart()
+  const count = cart?.totalQuantity ?? 0
+
+  return (
+    <header className="sticky top-0 z-40 border-b border-line bg-paper/90 backdrop-blur-sm">
+      <div className="mx-auto flex max-w-[1320px] items-center justify-between gap-6 px-5 py-5 lg:px-10">
+        <a href="/" className="shrink-0 font-serif text-2xl italic tracking-tight text-ink">Getzemani</a>
+
+        <nav className="hidden items-center gap-8 text-sm text-ink-soft md:flex">
+          {NAV_ITEMS.map(item => (
+            <a key={item.label} href={item.href} className="underline-grow hover:text-ink">{item.label}</a>
+          ))}
+        </nav>
+
+        <div className="flex items-center gap-5">
+          <button
+            onClick={openCart}
+            className="flex items-center gap-2 text-sm text-ink hover:text-olive"
+            aria-label="Abrir bolsa"
+          >
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d="M6 8h12l-1 12.5a1 1 0 0 1-1 .9H8a1 1 0 0 1-1-.9L6 8Z" strokeLinejoin="round" />
+              <path d="M9 8V6a3 3 0 0 1 6 0v2" />
+            </svg>
+            <span>Bag{count > 0 ? ` (${count})` : ""}</span>
+          </button>
+          <button
+            className="flex flex-col gap-1.5 md:hidden"
+            onClick={() => setOpen(!open)}
+            aria-label="Abrir menú"
+            aria-expanded={open}
+          >
+            <span className="block h-px w-5 bg-ink" />
+            <span className="block h-px w-5 bg-ink" />
+          </button>
+        </div>
+      </div>
+
+      {open && (
+        <div className="border-t border-line px-5 py-5 md:hidden">
+          <div className="flex flex-col gap-4 text-sm text-ink-soft">
+            {NAV_ITEMS.map(item => (
+              <a key={item.label} href={item.href} onClick={() => setOpen(false)}>{item.label}</a>
+            ))}
+          </div>
+        </div>
+      )}
+    </header>
+  )
+}
+</file>
+
+<file path="context/cart-context.tsx">
+"use client"
+
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react"
+import type { Cart } from "@/lib/shopify"
+import { addToCartAction, getCartAction, removeCartLineAction, updateCartLineAction } from "@/lib/cart-actions"
+
+const STORAGE_KEY = "getzemani_cart_id"
+
+type CartContextValue = {
+  cart: Cart | null
+  isOpen: boolean
+  isLoading: boolean
+  openCart: () => void
+  closeCart: () => void
+  addItem: (merchandiseId: string, quantity?: number) => Promise<void>
+  updateItem: (lineId: string, quantity: number) => Promise<void>
+  removeItem: (lineId: string) => Promise<void>
+}
+
+const CartContext = createContext<CartContextValue | null>(null)
+
+export function CartProvider({ children }: { children: React.ReactNode }) {
+  const [cart, setCart] = useState<Cart | null>(null)
+  const [isOpen, setIsOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+
+  useEffect(() => {
+    const storedId = typeof window !== "undefined" ? localStorage.getItem(STORAGE_KEY) : null
+    if (!storedId) return
+    getCartAction(storedId)
+      .then(existing => { if (existing) setCart(existing) })
+      .catch(() => localStorage.removeItem(STORAGE_KEY))
+  }, [])
+
+  const persist = useCallback((next: Cart) => {
+    setCart(next)
+    if (typeof window !== "undefined") localStorage.setItem(STORAGE_KEY, next.id)
+  }, [])
+
+  const addItem = useCallback(async (merchandiseId: string, quantity = 1) => {
+    setIsLoading(true)
+    try {
+      const next = await addToCartAction(cart?.id ?? null, merchandiseId, quantity)
+      persist(next)
+      setIsOpen(true)
+    } finally {
+      setIsLoading(false)
+    }
+  }, [cart?.id, persist])
+
+  const updateItem = useCallback(async (lineId: string, quantity: number) => {
+    if (!cart) return
+    setIsLoading(true)
+    try {
+      const next = await updateCartLineAction(cart.id, lineId, quantity)
+      persist(next)
+    } finally {
+      setIsLoading(false)
+    }
+  }, [cart, persist])
+
+  const removeItem = useCallback(async (lineId: string) => {
+    if (!cart) return
+    setIsLoading(true)
+    try {
+      const next = await removeCartLineAction(cart.id, lineId)
+      persist(next)
+    } finally {
+      setIsLoading(false)
+    }
+  }, [cart, persist])
+
+  const value = useMemo(() => ({
+    cart, isOpen, isLoading,
+    openCart: () => setIsOpen(true),
+    closeCart: () => setIsOpen(false),
+    addItem, updateItem, removeItem,
+  }), [cart, isOpen, isLoading, addItem, updateItem, removeItem])
+
+  return <CartContext.Provider value={value}>{children}</CartContext.Provider>
+}
+
+export function useCart() {
+  const ctx = useContext(CartContext)
+  if (!ctx) throw new Error("useCart debe usarse dentro de CartProvider")
+  return ctx
+}
+</file>
+
+<file path="data/supported-versions-schema.json">
+{
+  "shopifyql": [
+    {
+      "name": "2026-10",
+      "releaseCandidate": true
+    },
+    {
+      "name": "2026-07",
+      "latestVersion": true
+    },
+    {
+      "name": "2026-04"
+    },
+    {
+      "name": "2026-01"
+    },
+    {
+      "name": "2025-10"
+    }
+  ],
+  "admin": [
+    {
+      "name": "unstable"
+    },
+    {
+      "name": "2026-10",
+      "releaseCandidate": true
+    },
+    {
+      "name": "2026-07",
+      "latestVersion": true
+    },
+    {
+      "name": "2026-04"
+    },
+    {
+      "name": "2026-01"
+    },
+    {
+      "name": "2025-10"
+    }
+  ],
+  "storefront-graphql": [
+    {
+      "name": "unstable"
+    },
+    {
+      "name": "2026-10",
+      "releaseCandidate": true
+    },
+    {
+      "name": "2026-07",
+      "latestVersion": true
+    },
+    {
+      "name": "2026-04"
+    },
+    {
+      "name": "2026-01"
+    },
+    {
+      "name": "2025-10"
+    }
+  ],
+  "partner": [
+    {
+      "name": "unstable"
+    },
+    {
+      "name": "2026-07",
+      "latestVersion": true
+    },
+    {
+      "name": "2026-04"
+    },
+    {
+      "name": "2026-01"
+    },
+    {
+      "name": "2025-10"
+    },
+    {
+      "name": "2025-07"
+    }
+  ],
+  "customer": [
+    {
+      "name": "unstable"
+    },
+    {
+      "name": "2026-10",
+      "releaseCandidate": true
+    },
+    {
+      "name": "2026-07",
+      "latestVersion": true
+    },
+    {
+      "name": "2026-04"
+    },
+    {
+      "name": "2026-01"
+    },
+    {
+      "name": "2025-10"
+    }
+  ],
+  "payments-apps": [
+    {
+      "name": "unstable"
+    },
+    {
+      "name": "2026-10",
+      "releaseCandidate": true
+    },
+    {
+      "name": "2026-07",
+      "latestVersion": true
+    },
+    {
+      "name": "2026-04"
+    },
+    {
+      "name": "2026-01"
+    },
+    {
+      "name": "2025-10"
+    }
+  ],
+  "polaris-app-home": [],
+  "polaris-admin-extensions": [
+    {
+      "name": "2026-04",
+      "latestVersion": true
+    },
+    {
+      "name": "2026-01"
+    },
+    {
+      "name": "2025-10"
+    },
+    {
+      "name": "2025-07"
+    }
+  ],
+  "polaris-checkout-extensions": [
+    {
+      "name": "2026-07",
+      "latestVersion": true
+    },
+    {
+      "name": "2026-04"
+    },
+    {
+      "name": "2026-01"
+    },
+    {
+      "name": "2025-10"
+    },
+    {
+      "name": "2025-07"
+    }
+  ],
+  "polaris-customer-account-extensions": [
+    {
+      "name": "2026-07",
+      "latestVersion": true
+    },
+    {
+      "name": "2026-04"
+    },
+    {
+      "name": "2026-01"
+    },
+    {
+      "name": "2025-10"
+    },
+    {
+      "name": "2025-07"
+    }
+  ],
+  "pos-ui": [
+    {
+      "name": "2026-07",
+      "latestVersion": true
+    },
+    {
+      "name": "2026-04"
+    },
+    {
+      "name": "2026-01"
+    },
+    {
+      "name": "2025-10"
+    },
+    {
+      "name": "2025-07"
+    }
+  ],
+  "hydrogen": [
+    {
+      "name": "2026-04",
+      "latestVersion": true
+    },
+    {
+      "name": "2026-01"
+    },
+    {
+      "name": "2025-10"
+    },
+    {
+      "name": "2025-07"
+    }
+  ],
+  "storefront-web-components": [],
+  "functions_cart_checkout_validation": [
+    {
+      "name": "unstable"
+    },
+    {
+      "name": "2026-10",
+      "releaseCandidate": true
+    },
+    {
+      "name": "2026-07",
+      "latestVersion": true
+    },
+    {
+      "name": "2026-04"
+    },
+    {
+      "name": "2026-01"
+    },
+    {
+      "name": "2025-10"
+    }
+  ],
+  "functions_cart_transform": [
+    {
+      "name": "unstable"
+    },
+    {
+      "name": "2026-10",
+      "releaseCandidate": true
+    },
+    {
+      "name": "2026-07",
+      "latestVersion": true
+    },
+    {
+      "name": "2026-04"
+    },
+    {
+      "name": "2026-01"
+    },
+    {
+      "name": "2025-10"
+    }
+  ],
+  "functions_delivery_customization": [
+    {
+      "name": "unstable"
+    },
+    {
+      "name": "2026-10",
+      "releaseCandidate": true
+    },
+    {
+      "name": "2026-07",
+      "latestVersion": true
+    },
+    {
+      "name": "2026-04"
+    },
+    {
+      "name": "2026-01"
+    },
+    {
+      "name": "2025-10"
+    }
+  ],
+  "functions_discount": [
+    {
+      "name": "unstable"
+    },
+    {
+      "name": "2026-10",
+      "releaseCandidate": true
+    },
+    {
+      "name": "2026-07",
+      "latestVersion": true
+    },
+    {
+      "name": "2026-04"
+    },
+    {
+      "name": "2026-01"
+    },
+    {
+      "name": "2025-10"
+    }
+  ],
+  "functions_discounts_allocator": [
+    {
+      "name": "unstable",
+      "latestVersion": true
+    }
+  ],
+  "functions_fulfillment_constraints": [
+    {
+      "name": "unstable"
+    },
+    {
+      "name": "2026-10",
+      "releaseCandidate": true
+    },
+    {
+      "name": "2026-07",
+      "latestVersion": true
+    },
+    {
+      "name": "2026-04"
+    },
+    {
+      "name": "2026-01"
+    },
+    {
+      "name": "2025-10"
+    }
+  ],
+  "functions_local_pickup_delivery_option_generator": [
+    {
+      "name": "unstable",
+      "latestVersion": true
+    }
+  ],
+  "functions_order_discounts": [
+    {
+      "name": "unstable"
+    },
+    {
+      "name": "2026-10",
+      "releaseCandidate": true
+    },
+    {
+      "name": "2026-07",
+      "latestVersion": true
+    },
+    {
+      "name": "2026-04"
+    },
+    {
+      "name": "2026-01"
+    },
+    {
+      "name": "2025-10"
+    }
+  ],
+  "functions_order_routing_location_rule": [
+    {
+      "name": "unstable"
+    },
+    {
+      "name": "2026-10",
+      "releaseCandidate": true
+    },
+    {
+      "name": "2026-07",
+      "latestVersion": true
+    },
+    {
+      "name": "2026-04"
+    },
+    {
+      "name": "2026-01"
+    },
+    {
+      "name": "2025-10"
+    }
+  ],
+  "functions_payment_customization": [
+    {
+      "name": "unstable"
+    },
+    {
+      "name": "2026-10",
+      "releaseCandidate": true
+    },
+    {
+      "name": "2026-07",
+      "latestVersion": true
+    },
+    {
+      "name": "2026-04"
+    },
+    {
+      "name": "2026-01"
+    },
+    {
+      "name": "2025-10"
+    }
+  ],
+  "functions_pickup_point_delivery_option_generator": [
+    {
+      "name": "unstable",
+      "latestVersion": true
+    }
+  ],
+  "functions_product_discounts": [
+    {
+      "name": "unstable"
+    },
+    {
+      "name": "2026-10",
+      "releaseCandidate": true
+    },
+    {
+      "name": "2026-07",
+      "latestVersion": true
+    },
+    {
+      "name": "2026-04"
+    },
+    {
+      "name": "2026-01"
+    },
+    {
+      "name": "2025-10"
+    }
+  ],
+  "functions_shipping_discounts": [
+    {
+      "name": "unstable"
+    },
+    {
+      "name": "2026-10",
+      "releaseCandidate": true
+    },
+    {
+      "name": "2026-07",
+      "latestVersion": true
+    },
+    {
+      "name": "2026-04"
+    },
+    {
+      "name": "2026-01"
+    },
+    {
+      "name": "2025-10"
+    }
+  ]
+}
+</file>
+
+<file path="lib/cart-actions.ts">
+"use server"
+
+import { addCartLine, createCart, getCart, removeCartLine, updateCartLine } from "@/lib/shopify"
+
+export async function addToCartAction(cartId: string | null, merchandiseId: string, quantity: number) {
+  if (!cartId) return createCart(merchandiseId, quantity)
+  try {
+    return await addCartLine(cartId, merchandiseId, quantity)
+  } catch {
+    // The stored cart may be stale/expired — start a fresh one.
+    return createCart(merchandiseId, quantity)
+  }
+}
+
+export async function updateCartLineAction(cartId: string, lineId: string, quantity: number) {
+  if (quantity <= 0) return removeCartLine(cartId, lineId)
+  return updateCartLine(cartId, lineId, quantity)
+}
+
+export async function removeCartLineAction(cartId: string, lineId: string) {
+  return removeCartLine(cartId, lineId)
+}
+
+export async function getCartAction(cartId: string) {
+  return getCart(cartId)
+}
+</file>
+
+<file path=".env.local">
+# Copia este archivo a .env.local y rellena con tus valores reales.
+# .env.local NUNCA se sube a git (ya está en .gitignore).
+
+# Dominio de tu tienda Shopify (sin https://, sin barra final)
+SHOPIFY_STORE_DOMAIN=
+
+# Storefront API access token de la Custom App de Getzemani en Shopify Admin
+SHOPIFY_STOREFRONT_ACCESS_TOKEN=
+
+# Nota: la versión de la API está fijada en lib/shopify.ts (2026-01).
+# No hace falta una variable SHOPIFY_API_VERSION.
+</file>
+
+<file path="next-env.d.ts">
+/// <reference types="next" />
+/// <reference types="next/image-types/global" />
+
+// NOTE: This file should not be edited
+// see https://nextjs.org/docs/basic-features/typescript for more information.
+</file>
+
+<file path="next.config.js">
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "cdn.shopify.com",
+      },
+    ],
+  },
+};
+
+module.exports = nextConfig;
+</file>
+
+<file path="package.json">
+{
+  "name": "getzemani-storefront",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "next": "14.2.5",
+    "postcss": "^8.5.28",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "typescript": "^5.5.0"
+  }
+}
+</file>
+
+<file path="postcss.config.mjs">
+const config = { plugins: { '@tailwindcss/postcss': {} } }
+export default config
+</file>
+
+<file path="tsconfig.json">
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [{ "name": "next" }],
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
+}
+</file>
+
+<file path="lib/shopify.ts">
+const endpoint = `https://${process.env.SHOPIFY_STORE_DOMAIN}/api/2026-07/graphql.json`
+const token = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN
+
+async function shopifyFetch<T>(query: string, variables?: Record<string, unknown>, cache: "cart" | "catalog" = "catalog"): Promise<T> {
+  if (!process.env.SHOPIFY_STORE_DOMAIN || !token) throw new Error("Shopify no está configurado")
+  const response = await fetch(endpoint, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-Shopify-Storefront-Access-Token": token },
+    body: JSON.stringify({ query, variables }),
+    // Cart calls must never be cached; catalog data can revalidate periodically.
+    ...(cache === "cart" ? { cache: "no-store" as const } : { next: { revalidate: 60 } }),
+  })
+  if (!response.ok) throw new Error("No se pudo conectar con Shopify")
+  const payload = await response.json()
+  if (payload.errors?.length) throw new Error(payload.errors[0].message)
+  return payload.data
+}
+
+export type Money = { amount: string; currencyCode: string }
+
+export type ProductImage = { url: string; altText?: string | null; width: number; height: number }
+
+export type ProductVariant = {
+  id: string
+  title: string
+  availableForSale: boolean
+  price: Money
+  selectedOptions: { name: string; value: string }[]
+}
+
+export type Product = {
+  id: string
+  title: string
+  handle: string
+  description: string
+  descriptionHtml?: string
+  featuredImage?: ProductImage
+  images?: { nodes: ProductImage[] }
+  priceRange: { minVariantPrice: Money }
+  options?: { name: string; values: string[] }[]
+  variants: { nodes: ProductVariant[] }
+}
+
+export type Collection = { id: string; title: string; handle: string; image?: { url: string; altText?: string | null } }
+
+const PRODUCT_CARD_FIELDS = `
+  id title handle description
+  featuredImage { url altText width height }
+  priceRange { minVariantPrice { amount currencyCode } }
+  variants(first: 1) { nodes { id title availableForSale price { amount currencyCode } selectedOptions { name value } } }
+`
+
+export async function getStorefront() {
+  const query = `query Storefront {
+    products(first: 8, sortKey: BEST_SELLING) { nodes { ${PRODUCT_CARD_FIELDS} } }
+    collections(first: 6) { nodes { id title handle image { url altText } } }
+  }`
+  return shopifyFetch<{ products: { nodes: Product[] }; collections: { nodes: Collection[] } }>(query)
+}
+
+export async function getProduct(handle: string) {
+  const query = `query ProductByHandle($handle: String!) {
+    product(handle: $handle) {
+      id title handle description descriptionHtml
+      featuredImage { url altText width height }
+      images(first: 6) { nodes { url altText width height } }
+      priceRange { minVariantPrice { amount currencyCode } }
+      options { name values }
+      variants(first: 20) { nodes { id title availableForSale price { amount currencyCode } selectedOptions { name value } } }
+    }
+  }`
+  const data = await shopifyFetch<{ product: Product | null }>(query, { handle })
+  return data.product
+}
+
+export async function getRelatedProducts(excludeHandle: string) {
+  const query = `query Related { products(first: 5, sortKey: BEST_SELLING) { nodes { ${PRODUCT_CARD_FIELDS} } } }`
+  const data = await shopifyFetch<{ products: { nodes: Product[] } }>(query)
+  return data.products.nodes.filter(p => p.handle !== excludeHandle).slice(0, 4)
+}
+
+// ---------- Cart (Storefront Cart API) ----------
+
+export type CartLine = {
+  id: string
+  quantity: number
+  merchandise: {
+    id: string
+    title: string
+    product: { title: string; handle: string; featuredImage?: ProductImage }
+    price: Money
+  }
+}
+
+export type Cart = {
+  id: string
+  checkoutUrl: string
+  totalQuantity: number
+  cost: { subtotalAmount: Money; totalAmount: Money }
+  lines: { nodes: CartLine[] }
+}
+
+const CART_FIELDS = `
+  id checkoutUrl totalQuantity
+  cost { subtotalAmount { amount currencyCode } totalAmount { amount currencyCode } }
+  lines(first: 50) {
+    nodes {
+      id quantity
+      merchandise {
+        ... on ProductVariant {
+          id title price { amount currencyCode }
+          product { title handle featuredImage { url altText width height } }
+        }
+      }
+    }
+  }
+`
+
+export async function createCart(merchandiseId: string, quantity = 1) {
+  const query = `mutation CartCreate($lines: [CartLineInput!]) {
+    cartCreate(input: { lines: $lines }) { cart { ${CART_FIELDS} } userErrors { message } }
+  }`
+  const data = await shopifyFetch<{ cartCreate: { cart: Cart; userErrors: { message: string }[] } }>(
+    query, { lines: [{ merchandiseId, quantity }] }, "cart"
+  )
+  if (data.cartCreate.userErrors.length) throw new Error(data.cartCreate.userErrors[0].message)
+  return data.cartCreate.cart
+}
+
+export async function getCart(cartId: string) {
+  const query = `query CartQuery($id: ID!) { cart(id: $id) { ${CART_FIELDS} } }`
+  const data = await shopifyFetch<{ cart: Cart | null }>(query, { id: cartId }, "cart")
+  return data.cart
+}
+
+export async function addCartLine(cartId: string, merchandiseId: string, quantity = 1) {
+  const query = `mutation CartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
+    cartLinesAdd(cartId: $cartId, lines: $lines) { cart { ${CART_FIELDS} } userErrors { message } }
+  }`
+  const data = await shopifyFetch<{ cartLinesAdd: { cart: Cart; userErrors: { message: string }[] } }>(
+    query, { cartId, lines: [{ merchandiseId, quantity }] }, "cart"
+  )
+  if (data.cartLinesAdd.userErrors.length) throw new Error(data.cartLinesAdd.userErrors[0].message)
+  return data.cartLinesAdd.cart
+}
+
+export async function updateCartLine(cartId: string, lineId: string, quantity: number) {
+  const query = `mutation CartLinesUpdate($cartId: ID!, $lines: [CartLineUpdateInput!]!) {
+    cartLinesUpdate(cartId: $cartId, lines: $lines) { cart { ${CART_FIELDS} } userErrors { message } }
+  }`
+  const data = await shopifyFetch<{ cartLinesUpdate: { cart: Cart; userErrors: { message: string }[] } }>(
+    query, { cartId, lines: [{ id: lineId, quantity }] }, "cart"
+  )
+  if (data.cartLinesUpdate.userErrors.length) throw new Error(data.cartLinesUpdate.userErrors[0].message)
+  return data.cartLinesUpdate.cart
+}
+
+export async function removeCartLine(cartId: string, lineId: string) {
+  const query = `mutation CartLinesRemove($cartId: ID!, $lineIds: [ID!]!) {
+    cartLinesRemove(cartId: $cartId, lineIds: $lineIds) { cart { ${CART_FIELDS} } userErrors { message } }
+  }`
+  const data = await shopifyFetch<{ cartLinesRemove: { cart: Cart; userErrors: { message: string }[] } }>(
+    query, { cartId, lineIds: [lineId] }, "cart"
+  )
+  if (data.cartLinesRemove.userErrors.length) throw new Error(data.cartLinesRemove.userErrors[0].message)
+  return data.cartLinesRemove.cart
+}
+</file>
+
+<file path="README.md">
+# Getzemani — Storefront
+
+Frontend headless para Getzemani (skincare, wellness, movement, home) construido con Next.js 14 (App Router) + TypeScript + Tailwind v4, consumiendo Shopify vía Storefront API. Despliegue en Vercel.
+
+## Identidad visual
+
+- **Paleta**: linen/paper cálido, verde oliva (acento primario), arcilla apagada (acento secundario), tinta cálida en vez de negro puro.
+- **Tipografía**: Fraunces (serif editorial, headlines) + Karla (sans, UI y cuerpo).
+- **Tono**: elegante y tranquilo — sin mayúsculas sostenidas, sin fuente mono para etiquetas, sin flechas en los CTA.
+
+## Estructura
+
+```
+app/
+  layout.tsx              Providers de carrito + metadata
+  page.tsx                Home: hero, categorías, grid de productos, franja de valores, cita editorial
+  products/[handle]/      Página de producto individual
+components/
+  site-header.tsx          Header con navegación y contador de bolsa
+  cart-drawer.tsx           Panel deslizante del carrito
+  product-card.tsx          Tarjeta de producto (grid)
+  product-detail.tsx        Galería + selección de variante + añadir al carrito
+  site-footer.tsx            Footer compartido
+context/
+  cart-context.tsx          Estado del carrito (React Context + localStorage para el cart ID)
+lib/
+  shopify.ts                Todas las queries/mutations a Shopify Storefront API
+  cart-actions.ts            Server Actions que envuelven las mutaciones del carrito (el token nunca llega al cliente)
+```
+
+## Carrito
+
+Usa la Cart API de Shopify (`cartCreate`, `cartLinesAdd`, `cartLinesUpdate`, `cartLinesRemove`). El `cart.id` se guarda en `localStorage` del navegador para persistir la bolsa entre visitas; todas las mutaciones reales ocurren en Server Actions (`lib/cart-actions.ts`), así que el Storefront token nunca se expone en el bundle del cliente. El checkout final redirige al `checkoutUrl` que devuelve Shopify.
+
+## Variables de entorno (Vercel)
+
+```
+SHOPIFY_STORE_DOMAIN=tu-tienda.myshopify.com
+SHOPIFY_STOREFRONT_ACCESS_TOKEN=xxxxx
+```
+
+Ver `.env.local.example` para desarrollo local.
+
+## Página de confirmación (`/thank-you`)
+
+El checkout completo ocurre en el dominio de Shopify (`checkoutUrl`), no en nuestro sitio — así que la única forma de traer al comprador de vuelta a `/thank-you` es agregando un script en **Shopify Admin → Settings → Checkout → Additional scripts** (disponible en todos los planes, no requiere Plus):
+
+```html
+{% if first_time_accessed %}
+<script>
+  window.location.href = "https://getzemani.store/thank-you?order={{ order.order_number }}&email={{ checkout.email | url_encode }}";
+</script>
+{% endif %}
+```
+
+`first_time_accessed` evita el redirect en cada refresh de la página de pedido. Esto es opcional: sin este script, Shopify igual muestra su propia página de confirmación (funcional, solo que no tiene el diseño de la marca).
+
+## Pendiente / próximos pasos
+
+- Conectar categorías (Skin/Body/Movement/Home) a colecciones reales de Shopify en vez del ancla `#categories`.
+- Definir estrategia de pricing (costo + envío + margen) para el catálogo de CJdropshipping.
+- Imágenes de stock de Unsplash en el hero y las categorías son placeholders — reemplazar por fotografía real de producto/marca.
+
+## Desarrollo local
+
+```bash
+npm install
+cp .env.local.example .env.local   # y completa tus credenciales
+npm run dev
+```
+</file>
+
+</files>
