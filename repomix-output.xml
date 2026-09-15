@@ -64,7 +64,6 @@ data/
 lib/
   cart-actions.ts
   shopify.ts
-.env.local
 next-env.d.ts
 next.config.js
 package.json
@@ -75,45 +74,6 @@ tsconfig.json
 
 <files>
 This section contains the contents of the repository's files.
-
-<file path="app/products/[handle]/page.tsx">
-import { notFound } from "next/navigation"
-import { SiteHeader } from "@/components/site-header"
-import { SiteFooter } from "@/components/site-footer"
-import { ProductCard } from "@/components/product-card"
-import { ProductDetail } from "@/components/product-detail"
-import { getProduct, getRelatedProducts } from "@/lib/shopify"
-
-export default async function ProductPage({ params }: { params: Promise<{ handle: string }> }) {
-  const { handle } = await params
-  const product = await getProduct(handle).catch(() => null)
-  if (!product) notFound()
-
-  const related = await getRelatedProducts(handle).catch(() => [])
-
-  return (
-    <main id="top" className="min-h-screen bg-paper">
-      <SiteHeader />
-      <section className="mx-auto max-w-[1320px] px-5 py-14 lg:px-10 lg:py-20">
-        <ProductDetail product={product} />
-      </section>
-
-      {related.length > 0 && (
-        <section className="border-t border-line bg-card/60 py-20">
-          <div className="mx-auto max-w-[1320px] px-5 lg:px-10">
-            <h2 className="mb-10 font-serif text-3xl text-ink lg:text-4xl">You may also like.</h2>
-            <div className="grid grid-cols-2 gap-x-4 gap-y-12 md:grid-cols-4 md:gap-x-6">
-              {related.map(p => <ProductCard key={p.id} product={p} />)}
-            </div>
-          </div>
-        </section>
-      )}
-
-      <SiteFooter />
-    </main>
-  )
-}
-</file>
 
 <file path="app/thank-you/page.tsx">
 import { SiteHeader } from "@/components/site-header"
@@ -276,127 +236,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         </CartProvider>
       </body>
     </html>
-  )
-}
-</file>
-
-<file path="app/page.tsx">
-import { SiteHeader } from "@/components/site-header"
-import { SiteFooter } from "@/components/site-footer"
-import { ProductCard } from "@/components/product-card"
-import { getStorefront, type Product } from "@/lib/shopify"
-
-const CATEGORIES = [
-  { name: "Skin", copy: "Cleansers, serums, and tools for a calmer routine.", image: "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=800&q=80" },
-  { name: "Body", copy: "Everyday rituals for skin, muscles, and rest.", image: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=800&q=80" },
-  { name: "Movement", copy: "Light equipment for a body that likes to move.", image: "https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=800&q=80" },
-  { name: "Home", copy: "Small objects that make a room feel like a pause.", image: "https://images.unsplash.com/photo-1517705008128-361805f42e86?auto=format&fit=crop&w=800&q=80" },
-]
-
-const VALUES = [
-  "Free returns within 30 days",
-  "Ingredients you can pronounce",
-  "Carbon-neutral shipping",
-  "Real people, real support",
-]
-
-export default async function Home() {
-  let data: Awaited<ReturnType<typeof getStorefront>> | null = null
-  try { data = await getStorefront() } catch { data = null }
-  const products: Product[] = data?.products.nodes || []
-
-  return (
-    <main id="top" className="min-h-screen bg-paper">
-      <SiteHeader />
-
-      {/* Hero */}
-      <section className="mx-auto max-w-[1320px] px-5 pb-20 pt-14 lg:px-10 lg:pb-28 lg:pt-20">
-        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[1fr_1fr]">
-          <div className="hero-rise">
-            <h1 className="max-w-lg text-balance font-serif text-[clamp(2.75rem,5.5vw,4.5rem)] font-normal leading-[1.04] tracking-tight text-ink">
-              Care, at the pace of a garden.
-            </h1>
-            <p className="mt-6 max-w-sm text-base leading-7 text-ink-soft">
-              Skincare, wellness, and home rituals designed for people who&apos;d rather feel better than do more.
-            </p>
-            <a
-              href="#shop"
-              className="mt-9 inline-block rounded-full bg-olive-deep px-7 py-3.5 text-sm text-paper transition-colors hover:bg-olive"
-            >
-              Shop the collection
-            </a>
-          </div>
-          <div className="organic-mask relative aspect-[4/5] overflow-hidden lg:aspect-[5/6]">
-            <img
-              src="https://images.unsplash.com/photo-1600334129128-685c5582fd35?auto=format&fit=crop&w=1200&q=85"
-              alt="Ritual de cuidado personal con productos naturales"
-              className="h-full w-full object-cover"
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* Categories */}
-      <section id="categories" className="border-y border-line bg-card/60 py-20">
-        <div className="mx-auto max-w-[1320px] px-5 lg:px-10">
-          <h2 className="max-w-md font-serif text-3xl leading-tight text-ink lg:text-4xl">Find your ritual.</h2>
-          <div className="mt-10 grid grid-cols-2 gap-4 lg:grid-cols-4">
-            {CATEGORIES.map(cat => (
-              <a key={cat.name} href="#shop" className="group block">
-                <div className="aspect-[4/5] overflow-hidden rounded-[var(--radius-card)]">
-                  <img
-                    src={cat.image}
-                    alt={cat.name}
-                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    loading="lazy"
-                  />
-                </div>
-                <h3 className="mt-3 text-sm font-medium text-ink">{cat.name}</h3>
-                <p className="mt-1 text-xs leading-5 text-ink-soft">{cat.copy}</p>
-              </a>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Product grid */}
-      <section id="shop" className="mx-auto max-w-[1320px] px-5 py-20 lg:px-10">
-        <div className="mb-10 flex items-end justify-between gap-4">
-          <h2 className="font-serif text-3xl text-ink lg:text-4xl">Curated for you.</h2>
-        </div>
-        <div className="grid grid-cols-2 gap-x-4 gap-y-12 md:grid-cols-4 md:gap-x-6">
-          {products.length ? (
-            products.slice(0, 8).map(product => <ProductCard key={product.id} product={product} />)
-          ) : (
-            <div className="col-span-full rounded-[var(--radius-card)] border border-line bg-card py-20 text-center text-sm text-ink-soft">
-              The catalog is being prepared.
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* Value strip */}
-      <section className="border-y border-line">
-        <div className="mx-auto grid max-w-[1320px] grid-cols-2 lg:grid-cols-4">
-          {VALUES.map(value => (
-            <div key={value} className="border-r border-line px-5 py-8 last:border-r-0 lg:px-10">
-              <p className="text-sm leading-6 text-ink">{value}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Editorial pull-quote */}
-      <section className="bg-olive-deep py-24">
-        <div className="mx-auto max-w-2xl px-5 text-center lg:px-10">
-          <p className="font-serif text-[clamp(1.75rem,3.5vw,2.75rem)] italic leading-tight text-paper">
-            Most wellness brands sell you more to do. We&apos;d rather sell you less to think about.
-          </p>
-        </div>
-      </section>
-
-      <SiteFooter />
-    </main>
   )
 }
 </file>
@@ -708,73 +547,6 @@ export function SiteFooter() {
         © 2026 Getzemani
       </div>
     </footer>
-  )
-}
-</file>
-
-<file path="components/site-header.tsx">
-"use client"
-
-import { useState } from "react"
-import { useCart } from "@/context/cart-context"
-
-const NAV_ITEMS = [
-  { label: "Skin", href: "/#categories" },
-  { label: "Body", href: "/#categories" },
-  { label: "Movement", href: "/#categories" },
-  { label: "Home", href: "/#categories" },
-]
-
-export function SiteHeader() {
-  const [open, setOpen] = useState(false)
-  const { cart, openCart } = useCart()
-  const count = cart?.totalQuantity ?? 0
-
-  return (
-    <header className="sticky top-0 z-40 border-b border-line bg-paper/90 backdrop-blur-sm">
-      <div className="mx-auto flex max-w-[1320px] items-center justify-between gap-6 px-5 py-5 lg:px-10">
-        <a href="/" className="shrink-0 font-serif text-2xl italic tracking-tight text-ink">Getzemani</a>
-
-        <nav className="hidden items-center gap-8 text-sm text-ink-soft md:flex">
-          {NAV_ITEMS.map(item => (
-            <a key={item.label} href={item.href} className="underline-grow hover:text-ink">{item.label}</a>
-          ))}
-        </nav>
-
-        <div className="flex items-center gap-5">
-          <button
-            onClick={openCart}
-            className="flex items-center gap-2 text-sm text-ink hover:text-olive"
-            aria-label="Abrir bolsa"
-          >
-            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <path d="M6 8h12l-1 12.5a1 1 0 0 1-1 .9H8a1 1 0 0 1-1-.9L6 8Z" strokeLinejoin="round" />
-              <path d="M9 8V6a3 3 0 0 1 6 0v2" />
-            </svg>
-            <span>Bag{count > 0 ? ` (${count})` : ""}</span>
-          </button>
-          <button
-            className="flex flex-col gap-1.5 md:hidden"
-            onClick={() => setOpen(!open)}
-            aria-label="Abrir menú"
-            aria-expanded={open}
-          >
-            <span className="block h-px w-5 bg-ink" />
-            <span className="block h-px w-5 bg-ink" />
-          </button>
-        </div>
-      </div>
-
-      {open && (
-        <div className="border-t border-line px-5 py-5 md:hidden">
-          <div className="flex flex-col gap-4 text-sm text-ink-soft">
-            {NAV_ITEMS.map(item => (
-              <a key={item.label} href={item.href} onClick={() => setOpen(false)}>{item.label}</a>
-            ))}
-          </div>
-        </div>
-      )}
-    </header>
   )
 }
 </file>
@@ -1355,20 +1127,6 @@ export async function getCartAction(cartId: string) {
 }
 </file>
 
-<file path=".env.local">
-# Copia este archivo a .env.local y rellena con tus valores reales.
-# .env.local NUNCA se sube a git (ya está en .gitignore).
-
-# Dominio de tu tienda Shopify (sin https://, sin barra final)
-SHOPIFY_STORE_DOMAIN=
-
-# Storefront API access token de la Custom App de Getzemani en Shopify Admin
-SHOPIFY_STOREFRONT_ACCESS_TOKEN=
-
-# Nota: la versión de la API está fijada en lib/shopify.ts (2026-01).
-# No hace falta una variable SHOPIFY_API_VERSION.
-</file>
-
 <file path="next-env.d.ts">
 /// <reference types="next" />
 /// <reference types="next/image-types/global" />
@@ -1452,22 +1210,417 @@ export default config
 }
 </file>
 
-<file path="lib/shopify.ts">
-const endpoint = `https://${process.env.SHOPIFY_STORE_DOMAIN}/api/2026-07/graphql.json`
-const token = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN
+<file path="app/products/[handle]/page.tsx">
+import { notFound } from "next/navigation"
+import { SiteHeader } from "@/components/site-header"
+import { SiteFooter } from "@/components/site-footer"
+import { ProductCard } from "@/components/product-card"
+import { ProductDetail } from "@/components/product-detail"
+import { getProduct, getRelatedProducts, getCollections } from "@/lib/shopify"
 
-async function shopifyFetch<T>(query: string, variables?: Record<string, unknown>, cache: "cart" | "catalog" = "catalog"): Promise<T> {
-  if (!process.env.SHOPIFY_STORE_DOMAIN || !token) throw new Error("Shopify no está configurado")
-  const response = await fetch(endpoint, {
+export default async function ProductPage({ params }: { params: Promise<{ handle: string }> }) {
+  const { handle } = await params
+  const product = await getProduct(handle).catch(() => null)
+  if (!product) notFound()
+
+  const [related, collections] = await Promise.all([
+    getRelatedProducts(handle).catch(() => []),
+    getCollections().catch(() => []),
+  ])
+
+  return (
+    <main id="top" className="min-h-screen bg-paper">
+      <SiteHeader collections={collections} />
+      <section className="mx-auto max-w-[1320px] px-5 py-14 lg:px-10 lg:py-20">
+        <ProductDetail product={product} />
+      </section>
+
+      {related.length > 0 && (
+        <section className="border-t border-line bg-card/60 py-20">
+          <div className="mx-auto max-w-[1320px] px-5 lg:px-10">
+            <h2 className="mb-10 font-serif text-3xl text-ink lg:text-4xl">You may also like.</h2>
+            <div className="grid grid-cols-2 gap-x-4 gap-y-12 md:grid-cols-4 md:gap-x-6">
+              {related.map(p => <ProductCard key={p.id} product={p} />)}
+            </div>
+          </div>
+        </section>
+      )}
+
+      <SiteFooter />
+    </main>
+  )
+}
+</file>
+
+<file path="README.md">
+# Getzemani — Storefront
+
+Frontend headless para Getzemani (skincare, wellness, movement, home) construido con Next.js 14 (App Router) + TypeScript + Tailwind v4, consumiendo Shopify vía Storefront API. Despliegue en Vercel.
+
+## Identidad visual
+
+- **Paleta**: linen/paper cálido, verde oliva (acento primario), arcilla apagada (acento secundario), tinta cálida en vez de negro puro.
+- **Tipografía**: Fraunces (serif editorial, headlines) + Karla (sans, UI y cuerpo).
+- **Tono**: elegante y tranquilo — sin mayúsculas sostenidas, sin fuente mono para etiquetas, sin flechas en los CTA.
+
+## Estructura
+
+```
+app/
+  layout.tsx              Providers de carrito + metadata
+  page.tsx                Home: hero, categorías, grid de productos, franja de valores, cita editorial
+  products/[handle]/      Página de producto individual
+components/
+  site-header.tsx          Header con navegación y contador de bolsa
+  cart-drawer.tsx           Panel deslizante del carrito
+  product-card.tsx          Tarjeta de producto (grid)
+  product-detail.tsx        Galería + selección de variante + añadir al carrito
+  site-footer.tsx            Footer compartido
+context/
+  cart-context.tsx          Estado del carrito (React Context + localStorage para el cart ID)
+lib/
+  shopify.ts                Todas las queries/mutations a Shopify Storefront API
+  cart-actions.ts            Server Actions que envuelven las mutaciones del carrito (el token nunca llega al cliente)
+```
+
+## Carrito
+
+Usa la Cart API de Shopify (`cartCreate`, `cartLinesAdd`, `cartLinesUpdate`, `cartLinesRemove`). El `cart.id` se guarda en `localStorage` del navegador para persistir la bolsa entre visitas; todas las mutaciones reales ocurren en Server Actions (`lib/cart-actions.ts`), así que el Storefront token nunca se expone en el bundle del cliente. El checkout final redirige al `checkoutUrl` que devuelve Shopify.
+
+## Variables de entorno (Vercel)
+
+```
+SHOPIFY_STORE_DOMAIN=tu-tienda.myshopify.com
+SHOPIFY_STOREFRONT_ACCESS_TOKEN=xxxxx
+```
+
+Ver `.env.local.example` para desarrollo local.
+
+## Página de confirmación (`/thank-you`)
+
+El checkout completo ocurre en el dominio de Shopify (`checkoutUrl`), no en nuestro sitio — así que la única forma de traer al comprador de vuelta a `/thank-you` es agregando un script en **Shopify Admin → Settings → Checkout → Additional scripts** (disponible en todos los planes, no requiere Plus):
+
+```html
+{% if first_time_accessed %}
+<script>
+  window.location.href = "https://getzemani.store/thank-you?order={{ order.order_number }}&email={{ checkout.email | url_encode }}";
+</script>
+{% endif %}
+```
+
+`first_time_accessed` evita el redirect en cada refresh de la página de pedido. Esto es opcional: sin este script, Shopify igual muestra su propia página de confirmación (funcional, solo que no tiene el diseño de la marca).
+
+## Pendiente / próximos pasos
+
+- Conectar categorías (Skin/Body/Movement/Home) a colecciones reales de Shopify en vez del ancla `#categories`.
+- Definir estrategia de pricing (costo + envío + margen) para el catálogo de CJdropshipping.
+- Imágenes de stock de Unsplash en el hero y las categorías son placeholders — reemplazar por fotografía real de producto/marca.
+
+## Desarrollo local
+
+```bash
+npm install
+cp .env.local.example .env.local   # y completa tus credenciales
+npm run dev
+```
+</file>
+
+<file path="components/site-header.tsx">
+"use client"
+
+import { useState } from "react"
+import { useCart } from "@/context/cart-context"
+import type { Collection } from "@/lib/shopify"
+
+export function SiteHeader({ collections }: { collections: Collection[] }) {
+  const [open, setOpen] = useState(false)
+  const { cart, openCart } = useCart()
+  const count = cart?.totalQuantity ?? 0
+
+  return (
+    <header className="sticky top-0 z-40 border-b border-line bg-paper/90 backdrop-blur-sm">
+      <div className="mx-auto flex max-w-[1320px] items-center justify-between gap-6 px-5 py-5 lg:px-10">
+        <a
+          href="/"
+          className="shrink-0 font-serif text-2xl italic tracking-tight text-ink"
+        >
+          Getzemani
+        </a>
+
+        <nav className="hidden items-center gap-8 text-sm text-ink-soft md:flex">
+          {collections.map((c) => (
+            <a
+              key={c.id}
+              href={`/?category=${c.handle}#shop`}
+              className="underline-grow hover:text-ink"
+            >
+              {c.title}
+            </a>
+          ))}
+        </nav>
+
+        <div className="flex items-center gap-5">
+          <button
+            onClick={openCart}
+            className="flex items-center gap-2 text-sm text-ink hover:text-olive"
+            aria-label="Abrir bolsa"
+          >
+            <svg
+              width="19"
+              height="19"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+            >
+              <path
+                d="M6 8h12l-1 12.5a1 1 0 0 1-1 .9H8a1 1 0 0 1-1-.9L6 8Z"
+                strokeLinejoin="round"
+              />
+              <path d="M9 8V6a3 3 0 0 1 6 0v2" />
+            </svg>
+
+            <span>Bag{count > 0 ? ` (${count})` : ""}</span>
+          </button>
+
+          <button
+            className="flex flex-col gap-1.5 md:hidden"
+            onClick={() => setOpen(!open)}
+            aria-label="Abrir menú"
+            aria-expanded={open}
+          >
+            <span className="block h-px w-5 bg-ink" />
+            <span className="block h-px w-5 bg-ink" />
+          </button>
+        </div>
+      </div>
+
+      {open && (
+        <div className="border-t border-line px-5 py-5 md:hidden">
+          <div className="flex flex-col gap-4 text-sm text-ink-soft">
+            {collections.map((c) => (
+              <a
+                key={c.id}
+                href={`/?category=${c.handle}#shop`}
+                onClick={() => setOpen(false)}
+              >
+                {c.title}
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+    </header>
+  )
+}
+</file>
+
+<file path="app/page.tsx">
+import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
+import { ProductCard } from "@/components/product-card";
+import { getCollectionProducts, getStorefront } from "@/lib/shopify";
+
+const VALUES = [
+  "Free returns within 30 days",
+  "Ingredients you can pronounce",
+  "Carbon-neutral shipping",
+  "Real people, real support",
+];
+
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ category?: string }>;
+}) {
+  const { category } = await searchParams;
+  const data = await getStorefront();
+  const selectedCollection = category
+    ? await getCollectionProducts(category)
+    : null;
+  const products = selectedCollection?.products.nodes ?? data.products.nodes;
+  const collections = data.collections.nodes;
+
+  return (
+    <main id="top" className="min-h-screen bg-paper">
+      <SiteHeader collections={collections} />
+
+      {/* Hero */}
+      <section className="mx-auto max-w-[1320px] px-5 pb-20 pt-14 lg:px-10 lg:pb-28 lg:pt-20">
+        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[1fr_1fr]">
+          <div className="hero-rise">
+            <h1 className="max-w-lg text-balance font-serif text-[clamp(2.75rem,5.5vw,4.5rem)] font-normal leading-[1.04] tracking-tight text-ink">
+              Care, at the pace of a garden.
+            </h1>
+            <p className="mt-6 max-w-sm text-base leading-7 text-ink-soft">
+              Skincare, wellness, and home rituals designed for people
+              who&apos;d rather feel better than do more.
+            </p>
+            <a
+              href="#shop"
+              className="mt-9 inline-block rounded-full bg-olive-deep px-7 py-3.5 text-sm text-paper transition-colors hover:bg-olive"
+            >
+              Shop the collection
+            </a>
+          </div>
+          <div className="organic-mask relative aspect-[4/5] overflow-hidden lg:aspect-[5/6]">
+            <img
+              src="https://images.unsplash.com/photo-1600334129128-685c5582fd35?auto=format&fit=crop&w=1200&q=85"
+              alt="Ritual de cuidado personal con productos naturales"
+              className="h-full w-full object-cover"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Categories */}
+      <section
+        id="categories"
+        className="border-y border-line bg-card/60 py-20"
+      >
+        <div className="mx-auto max-w-[1320px] px-5 lg:px-10">
+          <h2 className="max-w-md font-serif text-3xl leading-tight text-ink lg:text-4xl">
+            Find your ritual.
+          </h2>
+          <div className="mt-10 grid grid-cols-2 gap-4 lg:grid-cols-4">
+            <a href="/#shop" className="group block">
+              <div className="flex aspect-[4/5] items-end overflow-hidden rounded-[var(--radius-card)] bg-olive-deep p-5">
+                <span className="font-serif text-2xl text-paper">All products</span>
+              </div>
+              <h3 className="mt-3 text-sm font-medium text-ink">Everything</h3>
+              <p className="mt-1 text-xs leading-5 text-ink-soft">Browse the full Shopify catalog.</p>
+            </a>
+            {collections.map((collection) => (
+              <a key={collection.id} href={`/?category=${collection.handle}#shop`} className="group block">
+                <div className="aspect-[4/5] overflow-hidden rounded-[var(--radius-card)] bg-card">
+                  {collection.image ? (
+                    <img
+                      src={collection.image.url}
+                      alt={collection.image.altText || collection.title}
+                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="flex h-full items-end bg-olive p-5">
+                      <span className="font-serif text-2xl text-paper">{collection.title}</span>
+                    </div>
+                  )}
+                </div>
+                <h3 className="mt-3 text-sm font-medium text-ink">{collection.title}</h3>
+                <p className="mt-1 text-xs leading-5 text-ink-soft">See products in this collection.</p>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Product grid */}
+      <section id="shop" className="mx-auto max-w-[1320px] px-5 py-20 lg:px-10">
+        <div className="mb-10 flex items-end justify-between gap-4">
+          <h2 className="font-serif text-3xl text-ink lg:text-4xl">
+            Curated for you.
+          </h2>
+        </div>
+        <div className="grid grid-cols-2 gap-x-4 gap-y-12 md:grid-cols-4 md:gap-x-6">
+          {products.length ? (
+            products.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))
+          ) : (
+            <div className="col-span-full">No hay productos.</div>
+          )}
+        </div>
+      </section>
+
+      {/* Value strip */}
+      <section className="border-y border-line">
+        <div className="mx-auto grid max-w-[1320px] grid-cols-2 lg:grid-cols-4">
+          {VALUES.map((value) => (
+            <div
+              key={value}
+              className="border-r border-line px-5 py-8 last:border-r-0 lg:px-10"
+            >
+              <p className="text-sm leading-6 text-ink">{value}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Editorial pull-quote */}
+      <section className="bg-olive-deep py-24">
+        <div className="mx-auto max-w-2xl px-5 text-center lg:px-10">
+          <p className="font-serif text-[clamp(1.75rem,3.5vw,2.75rem)] italic leading-tight text-paper">
+            Most wellness brands sell you more to do. We&apos;d rather sell you
+            less to think about.
+          </p>
+        </div>
+      </section>
+
+      <SiteFooter />
+    </main>
+  );
+}
+</file>
+
+<file path="lib/shopify.ts">
+async function shopifyFetch<T>(
+  query: string,
+  variables?: Record<string, unknown>,
+  cache: "cart" | "catalog" = "catalog"
+): Promise<T> {
+  const domain = process.env.SHOPIFY_STORE_DOMAIN
+  const privateToken = process.env.SHOPIFY_STOREFRONT_PRIVATE_TOKEN
+  const publicToken = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN
+  const token = privateToken || publicToken
+
+  if (!domain || !token) {
+    throw new Error("Shopify no está configurado")
+  }
+
+  const response = await fetch(`https://${domain}/api/2026-07/graphql.json`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", "X-Shopify-Storefront-Access-Token": token },
-    body: JSON.stringify({ query, variables }),
-    // Cart calls must never be cached; catalog data can revalidate periodically.
-    ...(cache === "cart" ? { cache: "no-store" as const } : { next: { revalidate: 60 } }),
+
+    headers: {
+      "Content-Type": "application/json",
+      ...(privateToken
+        ? { "Shopify-Storefront-Private-Token": privateToken }
+        : { "X-Shopify-Storefront-Access-Token": publicToken as string }),
+    },
+
+    body: JSON.stringify({
+      query,
+      variables,
+    }),
+
+    ...(cache === "cart"
+      ? { cache: "no-store" as const }
+      : { next: { revalidate: 60 } }),
   })
-  if (!response.ok) throw new Error("No se pudo conectar con Shopify")
+
   const payload = await response.json()
-  if (payload.errors?.length) throw new Error(payload.errors[0].message)
+
+  console.log("SHOPIFY STATUS:", response.status)
+
+  if (!response.ok) {
+    console.error(
+      "SHOPIFY ERROR:",
+      JSON.stringify(payload, null, 2)
+    )
+
+    throw new Error(
+      `Shopify HTTP ${response.status}: ${JSON.stringify(payload)}`
+    )
+  }
+
+  if (payload.errors?.length) {
+    console.error(
+      "SHOPIFY GRAPHQL ERROR:",
+      JSON.stringify(payload.errors, null, 2)
+    )
+
+    throw new Error(payload.errors[0].message)
+  }
+
   return payload.data
 }
 
@@ -1498,6 +1651,8 @@ export type Product = {
 
 export type Collection = { id: string; title: string; handle: string; image?: { url: string; altText?: string | null } }
 
+export type CollectionProducts = { id: string; title: string; handle: string; products: { nodes: Product[] } }
+
 const PRODUCT_CARD_FIELDS = `
   id title handle description
   featuredImage { url altText width height }
@@ -1507,10 +1662,59 @@ const PRODUCT_CARD_FIELDS = `
 
 export async function getStorefront() {
   const query = `query Storefront {
-    products(first: 8, sortKey: BEST_SELLING) { nodes { ${PRODUCT_CARD_FIELDS} } }
-    collections(first: 6) { nodes { id title handle image { url altText } } }
+    products(first: 8, sortKey: BEST_SELLING) {
+      nodes {
+        ${PRODUCT_CARD_FIELDS}
+      }
+    }
+
+    collections(first: 6) {
+      nodes {
+        id
+        title
+        handle
+        image {
+          url
+          altText
+        }
+      }
+    }
   }`
-  return shopifyFetch<{ products: { nodes: Product[] }; collections: { nodes: Collection[] } }>(query)
+
+  return shopifyFetch<{
+    products: { nodes: Product[] }
+    collections: { nodes: Collection[] }
+  }>(query)
+}
+
+export async function getCollections() {
+  const query = `query Collections {
+    collections(first: 6) {
+      nodes {
+        id
+        title
+        handle
+        image { url altText }
+      }
+    }
+  }`
+  const data = await shopifyFetch<{ collections: { nodes: Collection[] } }>(query)
+  return data.collections.nodes
+}
+
+export async function getCollectionProducts(handle: string) {
+  const query = `query CollectionByHandle($handle: String!) {
+    collection(handle: $handle) {
+      id
+      title
+      handle
+      products(first: 8, sortKey: BEST_SELLING) {
+        nodes { ${PRODUCT_CARD_FIELDS} }
+      }
+    }
+  }`
+  const data = await shopifyFetch<{ collection: CollectionProducts | null }>(query, { handle })
+  return data.collection
 }
 
 export async function getProduct(handle: string) {
@@ -1620,79 +1824,6 @@ export async function removeCartLine(cartId: string, lineId: string) {
   if (data.cartLinesRemove.userErrors.length) throw new Error(data.cartLinesRemove.userErrors[0].message)
   return data.cartLinesRemove.cart
 }
-</file>
-
-<file path="README.md">
-# Getzemani — Storefront
-
-Frontend headless para Getzemani (skincare, wellness, movement, home) construido con Next.js 14 (App Router) + TypeScript + Tailwind v4, consumiendo Shopify vía Storefront API. Despliegue en Vercel.
-
-## Identidad visual
-
-- **Paleta**: linen/paper cálido, verde oliva (acento primario), arcilla apagada (acento secundario), tinta cálida en vez de negro puro.
-- **Tipografía**: Fraunces (serif editorial, headlines) + Karla (sans, UI y cuerpo).
-- **Tono**: elegante y tranquilo — sin mayúsculas sostenidas, sin fuente mono para etiquetas, sin flechas en los CTA.
-
-## Estructura
-
-```
-app/
-  layout.tsx              Providers de carrito + metadata
-  page.tsx                Home: hero, categorías, grid de productos, franja de valores, cita editorial
-  products/[handle]/      Página de producto individual
-components/
-  site-header.tsx          Header con navegación y contador de bolsa
-  cart-drawer.tsx           Panel deslizante del carrito
-  product-card.tsx          Tarjeta de producto (grid)
-  product-detail.tsx        Galería + selección de variante + añadir al carrito
-  site-footer.tsx            Footer compartido
-context/
-  cart-context.tsx          Estado del carrito (React Context + localStorage para el cart ID)
-lib/
-  shopify.ts                Todas las queries/mutations a Shopify Storefront API
-  cart-actions.ts            Server Actions que envuelven las mutaciones del carrito (el token nunca llega al cliente)
-```
-
-## Carrito
-
-Usa la Cart API de Shopify (`cartCreate`, `cartLinesAdd`, `cartLinesUpdate`, `cartLinesRemove`). El `cart.id` se guarda en `localStorage` del navegador para persistir la bolsa entre visitas; todas las mutaciones reales ocurren en Server Actions (`lib/cart-actions.ts`), así que el Storefront token nunca se expone en el bundle del cliente. El checkout final redirige al `checkoutUrl` que devuelve Shopify.
-
-## Variables de entorno (Vercel)
-
-```
-SHOPIFY_STORE_DOMAIN=tu-tienda.myshopify.com
-SHOPIFY_STOREFRONT_ACCESS_TOKEN=xxxxx
-```
-
-Ver `.env.local.example` para desarrollo local.
-
-## Página de confirmación (`/thank-you`)
-
-El checkout completo ocurre en el dominio de Shopify (`checkoutUrl`), no en nuestro sitio — así que la única forma de traer al comprador de vuelta a `/thank-you` es agregando un script en **Shopify Admin → Settings → Checkout → Additional scripts** (disponible en todos los planes, no requiere Plus):
-
-```html
-{% if first_time_accessed %}
-<script>
-  window.location.href = "https://getzemani.store/thank-you?order={{ order.order_number }}&email={{ checkout.email | url_encode }}";
-</script>
-{% endif %}
-```
-
-`first_time_accessed` evita el redirect en cada refresh de la página de pedido. Esto es opcional: sin este script, Shopify igual muestra su propia página de confirmación (funcional, solo que no tiene el diseño de la marca).
-
-## Pendiente / próximos pasos
-
-- Conectar categorías (Skin/Body/Movement/Home) a colecciones reales de Shopify en vez del ancla `#categories`.
-- Definir estrategia de pricing (costo + envío + margen) para el catálogo de CJdropshipping.
-- Imágenes de stock de Unsplash en el hero y las categorías son placeholders — reemplazar por fotografía real de producto/marca.
-
-## Desarrollo local
-
-```bash
-npm install
-cp .env.local.example .env.local   # y completa tus credenciales
-npm run dev
-```
 </file>
 
 </files>

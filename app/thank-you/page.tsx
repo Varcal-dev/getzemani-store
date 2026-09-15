@@ -1,5 +1,6 @@
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
+import { getCollections } from "@/lib/shopify"
 
 export default async function ThankYouPage({
   searchParams,
@@ -7,10 +8,11 @@ export default async function ThankYouPage({
   searchParams: Promise<{ order?: string; email?: string }>
 }) {
   const { order, email } = await searchParams
+  const collections = await getCollections().catch(() => [])
 
   return (
     <main id="top" className="min-h-screen bg-paper">
-      <SiteHeader />
+      <SiteHeader collections={collections} />
 
       <section className="mx-auto flex max-w-2xl flex-col items-center px-5 py-24 text-center lg:py-32">
         <div className="organic-mask flex h-20 w-20 items-center justify-center bg-olive-pale">
