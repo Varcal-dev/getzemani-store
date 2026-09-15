@@ -1,22 +1,21 @@
-const endpoint = `https://${process.env.SHOPIFY_STORE_DOMAIN}/api/2026-07/graphql.json`
-
-const token = process.env.SHOPIFY_STOREFRONT_PRIVATE_TOKEN
-
 async function shopifyFetch<T>(
   query: string,
   variables?: Record<string, unknown>,
   cache: "cart" | "catalog" = "catalog"
 ): Promise<T> {
-  if (!process.env.SHOPIFY_STORE_DOMAIN || !token) {
+  const domain = process.env.SHOPIFY_STORE_DOMAIN
+  const token = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN
+
+  if (!domain || !token) {
     throw new Error("Shopify no está configurado")
   }
 
-  const response = await fetch(endpoint, {
+  const response = await fetch(`https://${domain}/api/2026-07/graphql.json`, {
     method: "POST",
 
     headers: {
       "Content-Type": "application/json",
-      "Shopify-Storefront-Private-Token": token,
+      "X-Shopify-Storefront-Access-Token": token,
     },
 
     body: JSON.stringify({
@@ -83,6 +82,8 @@ export type Product = {
 
 export type Collection = { id: string; title: string; handle: string; image?: { url: string; altText?: string | null } }
 
+export type CollectionProducts = { id: string; title: string; handle: string; products: { nodes: Product[] } }
+
 const PRODUCT_CARD_FIELDS = `
   id title handle description
   featuredImage { url altText width height }
@@ -115,6 +116,21 @@ export async function getStorefront() {
     products: { nodes: Product[] }
     collections: { nodes: Collection[] }
   }>(query)
+}
+
+export async function getCollectionProducts(handle: string) {
+  const query = `query CollectionByHandle($handle: String!) {
+    collection(handle: $handle) {
+      id
+      title
+      handle
+      products(first: 8, sortKey: BEST_SELLING) {
+        nodes { ${PRODUCT_CARD_FIELDS} }
+      }
+    }
+  }`
+  const data = await shopifyFetch<{ collection: CollectionProducts | null }>(query, { handle })
+  return data.collection
 }
 
 export async function getProduct(handle: string) {
