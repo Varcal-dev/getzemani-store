@@ -4,7 +4,9 @@ async function shopifyFetch<T>(
   cache: "cart" | "catalog" = "catalog"
 ): Promise<T> {
   const domain = process.env.SHOPIFY_STORE_DOMAIN
-  const token = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN
+  const privateToken = process.env.SHOPIFY_STOREFRONT_PRIVATE_TOKEN
+  const publicToken = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN
+  const token = privateToken || publicToken
 
   if (!domain || !token) {
     throw new Error("Shopify no está configurado")
@@ -15,7 +17,9 @@ async function shopifyFetch<T>(
 
     headers: {
       "Content-Type": "application/json",
-      "X-Shopify-Storefront-Access-Token": token,
+      ...(privateToken
+        ? { "Shopify-Storefront-Private-Token": privateToken }
+        : { "X-Shopify-Storefront-Access-Token": publicToken as string }),
     },
 
     body: JSON.stringify({
