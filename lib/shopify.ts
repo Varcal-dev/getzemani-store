@@ -1,15 +1,29 @@
 const endpoint = `https://${process.env.SHOPIFY_STORE_DOMAIN}/api/2026-07/graphql.json`
-const token = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN
 
-async function shopifyFetch<T>(query: string, variables?: Record<string, unknown>, cache: "cart" | "catalog" = "catalog"): Promise<T> {
-  if (!process.env.SHOPIFY_STORE_DOMAIN || !token) throw new Error("Shopify no está configurado")
+const token = process.env.SHOPIFY_STOREFRONT_PRIVATE_TOKEN
+
+async function shopifyFetch<T>(
+  query: string,
+  variables?: Record<string, unknown>,
+  cache: "cart" | "catalog" = "catalog"
+): Promise<T> {
+  if (!process.env.SHOPIFY_STORE_DOMAIN || !token) {
+    throw new Error("Shopify no está configurado")
+  }
+
   const response = await fetch(endpoint, {
     method: "POST",
+
     headers: {
       "Content-Type": "application/json",
-      "X-Shopify-Storefront-Access-Token": token,
+      "Shopify-Storefront-Private-Token": token,
     },
-    body: JSON.stringify({ query, variables }),
+
+    body: JSON.stringify({
+      query,
+      variables,
+    }),
+
     ...(cache === "cart"
       ? { cache: "no-store" as const }
       : { next: { revalidate: 60 } }),
@@ -18,15 +32,24 @@ async function shopifyFetch<T>(query: string, variables?: Record<string, unknown
   const payload = await response.json()
 
   console.log("SHOPIFY STATUS:", response.status)
-  console.log("SHOPIFY RESPONSE:", JSON.stringify(payload, null, 2))
 
   if (!response.ok) {
+    console.error(
+      "SHOPIFY ERROR:",
+      JSON.stringify(payload, null, 2)
+    )
+
     throw new Error(
       `Shopify HTTP ${response.status}: ${JSON.stringify(payload)}`
     )
   }
 
   if (payload.errors?.length) {
+    console.error(
+      "SHOPIFY GRAPHQL ERROR:",
+      JSON.stringify(payload.errors, null, 2)
+    )
+
     throw new Error(payload.errors[0].message)
   }
 
