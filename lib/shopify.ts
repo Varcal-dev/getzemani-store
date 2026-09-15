@@ -122,6 +122,21 @@ export async function getStorefront() {
   }>(query)
 }
 
+export async function getCollections() {
+  const query = `query Collections {
+    collections(first: 6) {
+      nodes {
+        id
+        title
+        handle
+        image { url altText }
+      }
+    }
+  }`
+  const data = await shopifyFetch<{ collections: { nodes: Collection[] } }>(query)
+  return data.collections.nodes
+}
+
 export async function getCollectionProducts(handle: string) {
   const query = `query CollectionByHandle($handle: String!) {
     collection(handle: $handle) {

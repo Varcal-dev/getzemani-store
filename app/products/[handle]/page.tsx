@@ -3,18 +3,21 @@ import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { ProductCard } from "@/components/product-card"
 import { ProductDetail } from "@/components/product-detail"
-import { getProduct, getRelatedProducts } from "@/lib/shopify"
+import { getProduct, getRelatedProducts, getCollections } from "@/lib/shopify"
 
 export default async function ProductPage({ params }: { params: Promise<{ handle: string }> }) {
   const { handle } = await params
   const product = await getProduct(handle).catch(() => null)
   if (!product) notFound()
 
-  const related = await getRelatedProducts(handle).catch(() => [])
+  const [related, collections] = await Promise.all([
+    getRelatedProducts(handle).catch(() => []),
+    getCollections().catch(() => []),
+  ])
 
   return (
     <main id="top" className="min-h-screen bg-paper">
-      <SiteHeader />
+      <SiteHeader collections={collections} />
       <section className="mx-auto max-w-[1320px] px-5 py-14 lg:px-10 lg:py-20">
         <ProductDetail product={product} />
       </section>
