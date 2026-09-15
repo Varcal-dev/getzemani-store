@@ -41,6 +41,20 @@ SHOPIFY_STOREFRONT_ACCESS_TOKEN=xxxxx
 
 Ver `.env.local.example` para desarrollo local.
 
+## Página de confirmación (`/thank-you`)
+
+El checkout completo ocurre en el dominio de Shopify (`checkoutUrl`), no en nuestro sitio — así que la única forma de traer al comprador de vuelta a `/thank-you` es agregando un script en **Shopify Admin → Settings → Checkout → Additional scripts** (disponible en todos los planes, no requiere Plus):
+
+```html
+{% if first_time_accessed %}
+<script>
+  window.location.href = "https://getzemani.store/thank-you?order={{ order.order_number }}&email={{ checkout.email | url_encode }}";
+</script>
+{% endif %}
+```
+
+`first_time_accessed` evita el redirect en cada refresh de la página de pedido. Esto es opcional: sin este script, Shopify igual muestra su propia página de confirmación (funcional, solo que no tiene el diseño de la marca).
+
 ## Pendiente / próximos pasos
 
 - Conectar categorías (Skin/Body/Movement/Home) a colecciones reales de Shopify en vez del ancla `#categories`.
