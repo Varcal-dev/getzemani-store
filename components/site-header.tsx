@@ -2,15 +2,9 @@
 
 import { useState } from "react"
 import { useCart } from "@/context/cart-context"
+import type { Collection } from "@/lib/shopify"
 
-const NAV_ITEMS = [
-  { label: "Skin", href: "/#categories" },
-  { label: "Body", href: "/#categories" },
-  { label: "Movement", href: "/#categories" },
-  { label: "Home", href: "/#categories" },
-]
-
-export function SiteHeader() {
+export function SiteHeader({ collections }: { collections: Collection[] }) {
   const [open, setOpen] = useState(false)
   const { cart, openCart } = useCart()
   const count = cart?.totalQuantity ?? 0
@@ -21,8 +15,14 @@ export function SiteHeader() {
         <a href="/" className="shrink-0 font-serif text-2xl italic tracking-tight text-ink">Getzemani</a>
 
         <nav className="hidden items-center gap-8 text-sm text-ink-soft md:flex">
-          {NAV_ITEMS.map(item => (
-            <a key={item.label} href={item.href} className="underline-grow hover:text-ink">{item.label}</a>
+          {collections.map(c => (
+            
+              key={c.id}
+              href={`/?category=${c.handle}#shop`}
+              className="underline-grow hover:text-ink"
+            >
+              {c.title}
+            </a>
           ))}
         </nav>
 
@@ -53,8 +53,14 @@ export function SiteHeader() {
       {open && (
         <div className="border-t border-line px-5 py-5 md:hidden">
           <div className="flex flex-col gap-4 text-sm text-ink-soft">
-            {NAV_ITEMS.map(item => (
-              <a key={item.label} href={item.href} onClick={() => setOpen(false)}>{item.label}</a>
+            {collections.map(c => (
+              
+                key={c.id}
+                href={`/?category=${c.handle}#shop`}
+                onClick={() => setOpen(false)}
+              >
+                {c.title}
+              </a>
             ))}
           </div>
         </div>

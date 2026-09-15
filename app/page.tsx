@@ -25,7 +25,7 @@ export default async function Home({
 
   return (
     <main id="top" className="min-h-screen bg-paper">
-      <SiteHeader />
+      <SiteHeader collections={collections} />
 
       {/* Hero */}
       <section className="mx-auto max-w-[1320px] px-5 pb-20 pt-14 lg:px-10 lg:pb-28 lg:pt-20">
