@@ -1,34 +1,7 @@
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { ProductCard } from "@/components/product-card";
-import { getStorefront } from "@/lib/shopify";
-
-const CATEGORIES = [
-  {
-    name: "Skin",
-    copy: "Cleansers, serums, and tools for a calmer routine.",
-    image:
-      "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    name: "Body",
-    copy: "Everyday rituals for skin, muscles, and rest.",
-    image:
-      "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    name: "Movement",
-    copy: "Light equipment for a body that likes to move.",
-    image:
-      "https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    name: "Home",
-    copy: "Small objects that make a room feel like a pause.",
-    image:
-      "https://images.unsplash.com/photo-1517705008128-361805f42e86?auto=format&fit=crop&w=800&q=80",
-  },
-];
+import { getCollectionProducts, getStorefront } from "@/lib/shopify";
 
 const VALUES = [
   "Free returns within 30 days",
@@ -37,15 +10,18 @@ const VALUES = [
   "Real people, real support",
 ];
 
-export default async function Home() {
-  let data: Awaited<ReturnType<typeof getStorefront>> | null = null;
-  try {
-    data = await getStorefront();
-  } catch (error) {
-    console.error("SHOPIFY ERROR:", error);
-    throw error;
-  }
-  const products = data?.products.nodes || [];
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ category?: string }>;
+}) {
+  const { category } = await searchParams;
+  const data = await getStorefront();
+  const selectedCollection = category
+    ? await getCollectionProducts(category)
+    : null;
+  const products = selectedCollection?.products.nodes ?? data.products.nodes;
+  const collections = data.collections.nodes;
 
   return (
     <main id="top" className="min-h-screen bg-paper">
@@ -89,22 +65,31 @@ export default async function Home() {
             Find your ritual.
           </h2>
           <div className="mt-10 grid grid-cols-2 gap-4 lg:grid-cols-4">
-            {CATEGORIES.map((cat) => (
-              <a key={cat.name} href="#shop" className="group block">
-                <div className="aspect-[4/5] overflow-hidden rounded-[var(--radius-card)]">
-                  <img
-                    src={cat.image}
-                    alt={cat.name}
-                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    loading="lazy"
-                  />
+            <a href="/#shop" className="group block">
+              <div className="flex aspect-[4/5] items-end overflow-hidden rounded-[var(--radius-card)] bg-olive-deep p-5">
+                <span className="font-serif text-2xl text-paper">All products</span>
+              </div>
+              <h3 className="mt-3 text-sm font-medium text-ink">Everything</h3>
+              <p className="mt-1 text-xs leading-5 text-ink-soft">Browse the full Shopify catalog.</p>
+            </a>
+            {collections.map((collection) => (
+              <a key={collection.id} href={`/?category=${collection.handle}#shop`} className="group block">
+                <div className="aspect-[4/5] overflow-hidden rounded-[var(--radius-card)] bg-card">
+                  {collection.image ? (
+                    <img
+                      src={collection.image.url}
+                      alt={collection.image.altText || collection.title}
+                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="flex h-full items-end bg-olive p-5">
+                      <span className="font-serif text-2xl text-paper">{collection.title}</span>
+                    </div>
+                  )}
                 </div>
-                <h3 className="mt-3 text-sm font-medium text-ink">
-                  {cat.name}
-                </h3>
-                <p className="mt-1 text-xs leading-5 text-ink-soft">
-                  {cat.copy}
-                </p>
+                <h3 className="mt-3 text-sm font-medium text-ink">{collection.title}</h3>
+                <p className="mt-1 text-xs leading-5 text-ink-soft">See products in this collection.</p>
               </a>
             ))}
           </div>
