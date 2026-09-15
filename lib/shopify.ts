@@ -91,26 +91,29 @@ const PRODUCT_CARD_FIELDS = `
 `
 
 export async function getStorefront() {
-  const query = `
-    query {
-      products(first: 8) {
-        nodes {
-          id
-          title
-          handle
+  const query = `query Storefront {
+    products(first: 8, sortKey: BEST_SELLING) {
+      nodes {
+        ${PRODUCT_CARD_FIELDS}
+      }
+    }
+
+    collections(first: 6) {
+      nodes {
+        id
+        title
+        handle
+        image {
+          url
+          altText
         }
       }
     }
-  `
+  }`
 
   return shopifyFetch<{
-    products: {
-      nodes: {
-        id: string
-        title: string
-        handle: string
-      }[]
-    }
+    products: { nodes: Product[] }
+    collections: { nodes: Collection[] }
   }>(query)
 }
 
