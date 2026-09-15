@@ -1,4 +1,4 @@
-const endpoint = `https://${process.env.SHOPIFY_STORE_DOMAIN}/api/2026-01/graphql.json`
+const endpoint = `https://${process.env.SHOPIFY_STORE_DOMAIN}/api/2026-07/graphql.json`
 const token = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN
 
 async function shopifyFetch<T>(query: string, variables?: Record<string, unknown>, cache: "cart" | "catalog" = "catalog"): Promise<T> {
