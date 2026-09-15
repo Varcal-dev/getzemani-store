@@ -121,10 +121,7 @@ export default async function Home() {
         <div className="grid grid-cols-2 gap-x-4 gap-y-12 md:grid-cols-4 md:gap-x-6">
           {products.length ? (
             products.map((product) => (
-              <div key={product.id} className="border p-4">
-                <p className="font-bold">{product.title}</p>
-                <p className="text-sm">{product.handle}</p>
-              </div>
+              <ProductCard key={product.id} product={product} />
             ))
           ) : (
             <div className="col-span-full">No hay productos.</div>
