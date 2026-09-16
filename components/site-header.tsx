@@ -7,6 +7,8 @@ import type { Collection } from "@/lib/shopify"
 
 const NAV_ORDER = ["skin", "body", "wellness", "movement", "home"]
 
+const NAV_ORDER = ["skin", "body", "wellness", "movement", "home"]
+
 export function SiteHeader({ collections }: { collections: Collection[] }) {
   const [open, setOpen] = useState(false)
   const { cart, openCart } = useCart()
