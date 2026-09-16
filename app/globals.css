@@ -100,3 +100,48 @@ button { cursor: pointer; font-family: inherit; }
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+.product-description h1,
+.product-description h2,
+.product-description h3 {
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.product-description p {
+  margin-bottom: 1rem;
+  line-height: 1.7;
+}
+
+.product-description ul {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+  list-style: disc;
+}
+
+.product-description ol {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+  list-style: decimal;
+}
+
+.product-description li {
+  margin-bottom: 0.4rem;
+}
+
+.product-description strong {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.product-description em {
+  font-style: italic;
+}
+
+.product-description br {
+  display: block;
+  content: "";
+  margin-bottom: 0.5rem;
+}
