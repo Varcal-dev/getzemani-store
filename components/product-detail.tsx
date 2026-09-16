@@ -11,6 +11,21 @@ function formatMoney(amount: string, currencyCode: string) {
   }).format(Number(amount));
 }
 
+function ProductDescription({ description }: { description: string }) {
+  return (
+    <div
+      className="
+        product-description
+        mt-6
+        text-sm
+        leading-7
+        text-ink-soft
+      "
+      dangerouslySetInnerHTML={{ __html: description }}
+    />
+  )
+}
+
 export function ProductDetail({ product }: { product: Product }) {
   const { addItem, isLoading } = useCart();
   const images = product.images?.nodes?.length
@@ -95,10 +110,7 @@ export function ProductDetail({ product }: { product: Product }) {
           </p>
         )}
 
-        <div
-          className="product-description mt-6 max-w-md text-sm leading-6 text-ink-soft"
-          dangerouslySetInnerHTML={{ __html: product.description }}
-        />
+        <ProductDescription description={product.description} />
 
         {options.map((option) => (
           <div key={option.name} className="mt-7">
