@@ -1,160 +1,49 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Karla:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Manrope:wght@400;500;600;700&display=swap');
 @import 'tailwindcss';
 
 @theme inline {
-  --font-serif: 'Fraunces', serif;
-  --font-sans: 'Karla', sans-serif;
-
-  --color-paper: #f7f2ea;
-  --color-paper-deep: #efe7d8;
-  --color-ink: #201d17;
-  --color-ink-soft: #6f6a5d;
-  --color-olive: #5f6b4c;
-  --color-olive-deep: #2e361f;
-  --color-olive-pale: #dde2cf;
-  --color-brick: #b23a2e;
-  --color-brick-deep: #8f2c22;
-  --color-clay-pale: #f0ded4;
-  --color-line: #e2dac8;
-  --color-card: #fffdf8;
-
-  --radius-card: 0.6rem;
+  --font-serif: 'DM Serif Display', Georgia, serif;
+  --font-sans: 'Manrope', sans-serif;
+  --color-paper: #f5f3ee;
+  --color-paper-deep: #e9e7df;
+  --color-ink: #1d211e;
+  --color-ink-soft: #70766f;
+  --color-olive: #71806c;
+  --color-olive-deep: #3f5142;
+  --color-olive-pale: #dce3d8;
+  --color-line: #d9ddd6;
+  --color-card: #fbfaf7;
+  --radius-card: 0.15rem;
   --radius-chip: 999px;
 }
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body {
-  margin: 0;
-  background: var(--color-paper);
-  color: var(--color-ink);
-  font-family: 'Karla', sans-serif;
-  -webkit-font-smoothing: antialiased;
-}
+body { margin: 0; background: var(--color-paper); color: var(--color-ink); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
 button, a { -webkit-tap-highlight-color: transparent; }
 button { cursor: pointer; font-family: inherit; }
 ::selection { background: var(--color-olive-pale); color: var(--color-olive-deep); }
-
-:focus-visible {
-  outline: 2px solid var(--color-olive);
-  outline-offset: 3px;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
-/* Single orchestrated hero entrance */
-@keyframes rise-in {
-  from { opacity: 0; transform: translateY(14px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.hero-rise > * { animation: rise-in 0.7s cubic-bezier(.2,.7,.2,1) both; }
-.hero-rise > *:nth-child(2) { animation-delay: 0.08s; }
-.hero-rise > *:nth-child(3) { animation-delay: 0.16s; }
-
-/* Organic mask kept for the product detail + thank-you pages */
-.organic-mask {
-  border-radius: 3rem 1.25rem 3rem 1.25rem / 4rem 1.5rem 4rem 1.5rem;
-}
-
+:focus-visible { outline: 2px solid var(--color-olive); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
+@keyframes rise-in { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+.hero-rise > * { animation: rise-in .7s cubic-bezier(.2,.7,.2,1) both; }
+.hero-rise > *:nth-child(2) { animation-delay: .08s; }
+.hero-rise > *:nth-child(3) { animation-delay: .16s; }
 .product-image { transition: transform .7s cubic-bezier(.2,.8,.2,1); }
 .product-card:hover .product-image { transform: scale(1.035); }
-
-.quick-add {
-  transition: transform .25s cubic-bezier(.2,.8,.2,1), background-color .2s ease;
-}
+.quick-add { transition: transform .25s ease, background-color .2s ease; }
 .product-card:hover .quick-add { transform: translateY(-2px); }
-
-/* Continuous single-line ticker for the value strip -- denser than a boxed grid */
-.ticker-track {
-  display: flex;
-  width: max-content;
-  animation: ticker-scroll 28s linear infinite;
-}
-@keyframes ticker-scroll {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-
-.tray {
-  transition: transform .45s cubic-bezier(.2,.8,.2,1), opacity .3s ease;
-}
-
+.tray { transition: transform .45s cubic-bezier(.2,.8,.2,1), opacity .3s ease; }
 .underline-grow { position: relative; }
-.underline-grow::after {
-  content: '';
-  position: absolute; left: 0; bottom: -3px;
-  width: 100%; height: 1px; background: currentColor;
-  transform: scaleX(0); transform-origin: right;
-  transition: transform .35s ease;
-}
+.underline-grow::after { content: ''; position: absolute; left: 0; bottom: -5px; width: 100%; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: right; transition: transform .35s ease; }
 .underline-grow:hover::after { transform: scaleX(1); transform-origin: left; }
-
-.line-clamp-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.product-description {
-  color: var(--ink-soft);
-}
-
-.product-description h1,
-.product-description h2,
-.product-description h3 {
-  color: var(--ink);
-  font-family: Georgia, serif;
-  font-weight: 600;
-  line-height: 1.3;
-}
-
-.product-description h2 {
-  font-size: 1.5rem;
-  margin-top: 0;
-  margin-bottom: 1rem;
-}
-
-.product-description h3 {
-  font-size: 1.05rem;
-  margin-top: 1.75rem;
-  margin-bottom: 0.75rem;
-}
-
-.product-description p {
-  margin: 0 0 1rem;
-  line-height: 1.75;
-}
-
-.product-description ul,
-.product-description ol {
-  margin: 0 0 1.25rem;
-  padding-left: 1.5rem;
-}
-
-.product-description ul {
-  list-style-type: disc;
-}
-
-.product-description ol {
-  list-style-type: decimal;
-}
-
-.product-description li {
-  margin-bottom: 0.45rem;
-  line-height: 1.65;
-}
-
-.product-description strong {
-  color: var(--ink);
-  font-weight: 600;
-}
-
-.product-description a {
-  text-decoration: underline;
-}
+.product-description { color: var(--color-ink-soft); }
+.product-description h1, .product-description h2, .product-description h3 { color: var(--color-ink); font-family: var(--font-serif); font-weight: 400; line-height: 1.3; }
+.product-description h2 { font-size: 1.5rem; margin: 0 0 1rem; }
+.product-description h3 { font-size: 1.05rem; margin: 1.75rem 0 .75rem; }
+.product-description p { margin: 0 0 1rem; line-height: 1.75; }
+.product-description ul, .product-description ol { margin: 0 0 1.25rem; padding-left: 1.5rem; }
+.product-description ul { list-style: disc; } .product-description ol { list-style: decimal; }
+.product-description li { margin-bottom: .45rem; line-height: 1.65; }
+.product-description strong { color: var(--color-ink); font-weight: 600; }
+.product-description a { text-decoration: underline; }
