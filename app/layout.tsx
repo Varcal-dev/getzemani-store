@@ -4,8 +4,8 @@ import { CartProvider } from "@/context/cart-context"
 import { CartDrawer } from "@/components/cart-drawer"
 
 export const metadata: Metadata = {
-  title: "Getzemani — Skin, body, and home rituals",
-  description: "Skincare, wellness, movement, and home goods for a quieter kind of self-care.",
+  title: "Getzemani — Everyday rituals for feeling well",
+  description: "Carefully selected skincare, body care, and everyday wellness essentials for a quieter kind of self-care.",
 }
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
