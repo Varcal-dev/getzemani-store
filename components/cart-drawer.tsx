@@ -2,6 +2,25 @@
 
 import { useCart } from "@/context/cart-context"
 
+type CartLine = {
+  id: string
+  quantity: number
+  merchandise: {
+    title: string
+    product: {
+      title: string
+      featuredImage: {
+        url: string
+        altText: string | null
+      } | null
+    }
+    price: {
+      amount: string
+      currencyCode: string
+    }
+  }
+}
+
 function formatMoney(amount: string, currencyCode: string) {
   return new Intl.NumberFormat("en-US", { style: "currency", currency: currencyCode }).format(Number(amount))
 }
@@ -38,7 +57,7 @@ export function CartDrawer() {
             </p>
           ) : (
             <ul className="flex flex-col gap-6">
-              {lines.map((line: { id: any; merchandise: { product: { featuredImage: { url: any; altText: any }; title: any }; title: string; price: { amount: string; currencyCode: string } }; quantity: number }) => (
+              {lines.map((line: CartLine) => (
                 <li key={line.id} className="flex gap-4">
                   <div className="h-24 w-20 shrink-0 overflow-hidden rounded-lg bg-card">
                     {line.merchandise.product.featuredImage && (
