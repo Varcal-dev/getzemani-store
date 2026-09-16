@@ -1,3 +1,7 @@
+declare const process: {
+  env: Record<string, string | undefined>
+}
+
 async function shopifyFetch<T>(
   query: string,
   variables?: Record<string, unknown>,
@@ -33,8 +37,6 @@ async function shopifyFetch<T>(
   })
 
   const payload = await response.json()
-
-  console.log("SHOPIFY STATUS:", response.status)
 
   if (!response.ok) {
     console.error(

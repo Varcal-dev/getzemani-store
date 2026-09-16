@@ -2,14 +2,6 @@ import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { getCollections } from "@/lib/shopify"
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      [elemName: string]: any
-    }
-  }
-}
-
 export default async function ThankYouPage({
   searchParams,
 }: {
@@ -24,8 +16,20 @@ export default async function ThankYouPage({
 
       <section className="mx-auto flex max-w-2xl flex-col items-center px-5 py-24 text-center lg:py-32">
         <div className="organic-mask flex h-20 w-20 items-center justify-center bg-olive-pale">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-olive-deep">
-            <path d="M4 12.5 9.5 18 20 6" strokeLinecap="round" strokeLinejoin="round" />
+          <svg
+            width={28}
+            height={28}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={1.5}
+            className="text-olive-deep"
+          >
+            <path
+              d="M4 12.5 9.5 18 20 6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
         </div>
 
@@ -39,12 +43,12 @@ export default async function ThankYouPage({
             : "We've sent a confirmation email with everything you need to track your order."}
         </p>
 
-        {order && (
+        {order ? (
           <div className="mt-8 rounded-[var(--radius-card)] border border-line bg-card px-8 py-5">
             <p className="text-xs text-ink-soft">Order number</p>
             <p className="mt-1 font-serif text-xl text-ink">{order}</p>
           </div>
-        )}
+        ) : null}
 
         <a
           href="/#shop"

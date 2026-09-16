@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
@@ -5,7 +6,36 @@ import { ProductCard } from "@/components/product-card"
 import { ProductDetail } from "@/components/product-detail"
 import { getProduct, getRelatedProducts, getCollections } from "@/lib/shopify"
 
-export default async function ProductPage({ params }: { params: Promise<{ handle: string }> }) {
+type Props = { params: Promise<{ handle: string }> }
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { handle } = await params
+  const product = await getProduct(handle).catch(() => null)
+  if (!product) return {}
+
+  const description = product.description
+    ? product.description.slice(0, 155).trim()
+    : `${product.title} — available now at Getzemani.store.`
+  const image = product.featuredImage?.url
+
+  return {
+    title: `${product.title} | Getzemani`,
+    description,
+    openGraph: {
+      title: product.title,
+      description,
+      images: image ? [{ url: image }] : undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: product.title,
+      description,
+      images: image ? [image] : undefined,
+    },
+  }
+}
+
+export default async function ProductPage({ params }: Props) {
   const { handle } = await params
   const product = await getProduct(handle).catch(() => null)
   if (!product) notFound()
