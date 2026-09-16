@@ -5,19 +5,21 @@
   --font-serif: 'Fraunces', serif;
   --font-sans: 'Karla', sans-serif;
 
-  --color-paper: #f1efe4;
-  --color-paper-deep: #e9e4d3;
-  --color-ink: #2a2820;
-  --color-ink-soft: #6b6a5e;
+  --color-paper: #f7f2ea;
+  --color-paper-deep: #efe7d8;
+  --color-ink: #201d17;
+  --color-ink-soft: #6f6a5d;
   --color-olive: #5f6b4c;
-  --color-olive-deep: #333c28;
-  --color-olive-pale: #dbe0cd;
-  --color-clay: #b17f63;
-  --color-clay-pale: #e9dccf;
-  --color-line: #dcd6c4;
-  --color-card: #f8f6ee;
+  --color-olive-deep: #2e361f;
+  --color-olive-pale: #dde2cf;
+  --color-brick: #b23a2e;
+  --color-brick-deep: #8f2c22;
+  --color-clay-pale: #f0ded4;
+  --color-line: #e2dac8;
+  --color-card: #fffdf8;
 
-  --radius-card: 1.25rem;
+  --radius-card: 0.6rem;
+  --radius-chip: 999px;
 }
 
 * { box-sizing: border-box; }
@@ -54,13 +56,29 @@ button { cursor: pointer; font-family: inherit; }
 .hero-rise > *:nth-child(2) { animation-delay: 0.08s; }
 .hero-rise > *:nth-child(3) { animation-delay: 0.16s; }
 
-/* Organic mask for hero imagery -- a soft, single asymmetric curve rather than a hard rectangle */
+/* Organic mask kept for the product detail + thank-you pages */
 .organic-mask {
   border-radius: 3rem 1.25rem 3rem 1.25rem / 4rem 1.5rem 4rem 1.5rem;
 }
 
 .product-image { transition: transform .7s cubic-bezier(.2,.8,.2,1); }
 .product-card:hover .product-image { transform: scale(1.035); }
+
+.quick-add {
+  transition: transform .25s cubic-bezier(.2,.8,.2,1), background-color .2s ease;
+}
+.product-card:hover .quick-add { transform: translateY(-2px); }
+
+/* Continuous single-line ticker for the value strip -- denser than a boxed grid */
+.ticker-track {
+  display: flex;
+  width: max-content;
+  animation: ticker-scroll 28s linear infinite;
+}
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
 
 .tray {
   transition: transform .45s cubic-bezier(.2,.8,.2,1), opacity .3s ease;

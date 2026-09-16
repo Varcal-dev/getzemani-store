@@ -38,7 +38,7 @@ export function CartDrawer() {
             </p>
           ) : (
             <ul className="flex flex-col gap-6">
-              {lines.map(line => (
+              {lines.map((line: { id: any; merchandise: { product: { featuredImage: { url: any; altText: any }; title: any }; title: string; price: { amount: string; currencyCode: string } }; quantity: number }) => (
                 <li key={line.id} className="flex gap-4">
                   <div className="h-24 w-20 shrink-0 overflow-hidden rounded-lg bg-card">
                     {line.merchandise.product.featuredImage && (
@@ -75,7 +75,7 @@ export function CartDrawer() {
                       <p className="text-sm text-ink">{formatMoney(line.merchandise.price.amount, line.merchandise.price.currencyCode)}</p>
                     </div>
                     <button
-                      className="mt-1 self-start text-xs text-ink-soft underline-offset-2 hover:text-clay hover:underline"
+                      className="mt-1 self-start text-xs text-ink-soft underline-offset-2 hover:text-brick hover:underline"
                       onClick={() => removeItem(line.id)}
                       disabled={isLoading}
                     >

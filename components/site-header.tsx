@@ -11,10 +11,10 @@ export function SiteHeader({ collections }: { collections: Collection[] }) {
 
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-paper/90 backdrop-blur-sm">
-      <div className="mx-auto flex max-w-[1320px] items-center justify-between gap-6 px-5 py-5 lg:px-10">
+      <div className="mx-auto flex max-w-[1320px] items-center justify-between gap-6 px-5 py-4 lg:px-10">
         <a
           href="/"
-          className="shrink-0 font-serif text-2xl italic tracking-tight text-ink"
+          className="shrink-0 font-serif text-xl italic tracking-tight text-ink"
         >
           Getzemani
         </a>

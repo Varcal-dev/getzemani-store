@@ -2,6 +2,14 @@ import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { getCollections } from "@/lib/shopify"
 
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      [elemName: string]: any
+    }
+  }
+}
+
 export default async function ThankYouPage({
   searchParams,
 }: {

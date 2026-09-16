@@ -10,6 +10,13 @@ const VALUES = [
   "Real people, real support",
 ];
 
+const CATEGORY_GLYPH: Record<string, string> = {
+  skin: "◐",
+  body: "◡",
+  movement: "◑",
+  home: "▢",
+};
+
 export default async function Home({
   searchParams,
 }: {
@@ -28,68 +35,67 @@ export default async function Home({
       <SiteHeader collections={collections} />
 
       {/* Hero */}
-      <section className="mx-auto max-w-[1320px] px-5 pb-20 pt-14 lg:px-10 lg:pb-28 lg:pt-20">
-        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[1fr_1fr]">
+      <section className="mx-auto max-w-[1320px] px-5 pb-10 pt-10 lg:px-10 lg:pb-14 lg:pt-14">
+        <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
           <div className="hero-rise">
-            <h1 className="max-w-lg text-balance font-serif text-[clamp(2.75rem,5.5vw,4.5rem)] font-normal leading-[1.04] tracking-tight text-ink">
+            <h1 className="max-w-md text-balance font-serif text-[clamp(2.5rem,5vw,3.75rem)] font-normal leading-[1.05] tracking-tight text-ink">
               Care, at the pace of a garden.
             </h1>
-            <p className="mt-6 max-w-sm text-base leading-7 text-ink-soft">
+            <p className="mt-5 max-w-sm text-base leading-7 text-ink-soft">
               Skincare, wellness, and home rituals designed for people
               who&apos;d rather feel better than do more.
             </p>
-            <a
-              href="#shop"
-              className="mt-9 inline-block rounded-full bg-olive-deep px-7 py-3.5 text-sm text-paper transition-colors hover:bg-olive"
-            >
-              Shop the collection
-            </a>
+            <div className="mt-7 flex items-center gap-6">
+              <a
+                href="#shop"
+                className="inline-block rounded-[var(--radius-chip)] bg-olive-deep px-6 py-3 text-sm text-paper transition-colors hover:bg-olive"
+              >
+                Shop the collection
+              </a>
+              <a href="#categories" className="underline-grow text-sm text-ink-soft hover:text-ink">
+                Browse by ritual
+              </a>
+            </div>
           </div>
-          <div className="organic-mask relative aspect-[4/5] overflow-hidden lg:aspect-[5/6]">
-            <img
-              src="https://images.unsplash.com/photo-1600334129128-685c5582fd35?auto=format&fit=crop&w=1200&q=85"
-              alt="Ritual de cuidado personal con productos naturales"
-              className="h-full w-full object-cover"
-            />
+
+          <div className="relative">
+            <div className="aspect-[6/5] overflow-hidden rounded-[var(--radius-card)]">
+              <img
+                src="https://images.unsplash.com/photo-1600334129128-685c5582fd35?auto=format&fit=crop&w=1000&q=85"
+                alt="Ritual de cuidado personal con productos naturales"
+                className="h-full w-full object-cover"
+              />
+            </div>
+            <div className="absolute -bottom-6 -left-6 hidden w-48 rounded-[var(--radius-card)] bg-brick px-5 py-4 shadow-[0_10px_30px_-12px_rgba(178,58,46,0.55)] sm:block">
+              <p className="font-serif text-sm italic leading-snug text-paper">
+                Less to do. More that lasts.
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Categories */}
-      <section
-        id="categories"
-        className="border-y border-line bg-card/60 py-20"
-      >
+      {/* Categories -- compact chip row instead of a full image grid */}
+      <section id="categories" className="border-y border-line py-8">
         <div className="mx-auto max-w-[1320px] px-5 lg:px-10">
-          <h2 className="max-w-md font-serif text-3xl leading-tight text-ink lg:text-4xl">
-            Find your ritual.
-          </h2>
-          <div className="mt-10 grid grid-cols-2 gap-4 lg:grid-cols-4">
-            <a href="/#shop" className="group block">
-              <div className="flex aspect-[4/5] items-end overflow-hidden rounded-[var(--radius-card)] bg-olive-deep p-5">
-                <span className="font-serif text-2xl text-paper">All products</span>
-              </div>
-              <h3 className="mt-3 text-sm font-medium text-ink">Everything</h3>
-              <p className="mt-1 text-xs leading-5 text-ink-soft">Browse the full Shopify catalog.</p>
+          <div className="flex flex-wrap items-center gap-3">
+            <a
+              href="/#shop"
+              className="flex items-center gap-2.5 rounded-[var(--radius-chip)] border border-line bg-card px-4 py-2.5 text-sm text-ink transition-colors hover:border-olive hover:text-olive-deep"
+            >
+              <span aria-hidden className="text-olive">✻</span>
+              All products
             </a>
             {collections.map((collection) => (
-              <a key={collection.id} href={`/?category=${collection.handle}#shop`} className="group block">
-                <div className="aspect-[4/5] overflow-hidden rounded-[var(--radius-card)] bg-card">
-                  {collection.image ? (
-                    <img
-                      src={collection.image.url}
-                      alt={collection.image.altText || collection.title}
-                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                      loading="lazy"
-                    />
-                  ) : (
-                    <div className="flex h-full items-end bg-olive p-5">
-                      <span className="font-serif text-2xl text-paper">{collection.title}</span>
-                    </div>
-                  )}
-                </div>
-                <h3 className="mt-3 text-sm font-medium text-ink">{collection.title}</h3>
-                <p className="mt-1 text-xs leading-5 text-ink-soft">See products in this collection.</p>
+              <a
+                key={collection.id}
+                href={`/?category=${collection.handle}#shop`}
+                className="flex items-center gap-2.5 rounded-[var(--radius-chip)] border border-line bg-card px-4 py-2.5 text-sm text-ink transition-colors hover:border-olive hover:text-olive-deep"
+              >
+                <span aria-hidden className="text-olive">
+                  {CATEGORY_GLYPH[collection.handle] ?? "◍"}
+                </span>
+                {collection.title}
               </a>
             ))}
           </div>
@@ -97,13 +103,13 @@ export default async function Home({
       </section>
 
       {/* Product grid */}
-      <section id="shop" className="mx-auto max-w-[1320px] px-5 py-20 lg:px-10">
-        <div className="mb-10 flex items-end justify-between gap-4">
-          <h2 className="font-serif text-3xl text-ink lg:text-4xl">
+      <section id="shop" className="mx-auto max-w-[1320px] px-5 py-14 lg:px-10">
+        <div className="mb-7 flex items-end justify-between gap-4">
+          <h2 className="font-serif text-2xl text-ink lg:text-3xl">
             Curated for you.
           </h2>
         </div>
-        <div className="grid grid-cols-2 gap-x-4 gap-y-12 md:grid-cols-4 md:gap-x-6">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-9 md:grid-cols-3 md:gap-x-5 lg:grid-cols-5">
           {products.length ? (
             products.map((product) => (
               <ProductCard key={product.id} product={product} />
@@ -114,28 +120,31 @@ export default async function Home({
         </div>
       </section>
 
-      {/* Value strip */}
-      <section className="border-y border-line">
-        <div className="mx-auto grid max-w-[1320px] grid-cols-2 lg:grid-cols-4">
-          {VALUES.map((value) => (
-            <div
-              key={value}
-              className="border-r border-line px-5 py-8 last:border-r-0 lg:px-10"
+      {/* Value strip -- one continuous line rather than four half-empty boxes */}
+      <section className="overflow-hidden border-y border-line bg-card py-3.5">
+        <div className="ticker-track">
+          {[...VALUES, ...VALUES].map((value, i) => (
+            <span
+              key={i}
+              className="flex items-center whitespace-nowrap px-6 text-sm text-ink-soft"
             >
-              <p className="text-sm leading-6 text-ink">{value}</p>
-            </div>
+              {value}
+              <span aria-hidden className="ml-6 text-brick">
+                ·
+              </span>
+            </span>
           ))}
         </div>
       </section>
 
       {/* Editorial pull-quote */}
-      <section className="bg-olive-deep py-24">
-        <div className="mx-auto max-w-2xl px-5 text-center lg:px-10">
-          <p className="font-serif text-[clamp(1.75rem,3.5vw,2.75rem)] italic leading-tight text-paper">
-            Most wellness brands sell you more to do. We&apos;d rather sell you
-            less to think about.
+      <section className="mx-auto max-w-[1320px] px-5 py-14 lg:px-10">
+        <blockquote className="max-w-xl border-l-2 border-brick pl-6">
+          <p className="font-serif text-[clamp(1.4rem,2.6vw,1.9rem)] italic leading-snug text-ink">
+            Most wellness brands sell you more to do. We&apos;d rather sell
+            you less to think about.
           </p>
-        </div>
+        </blockquote>
       </section>
 
       <SiteFooter />

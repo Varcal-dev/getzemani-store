@@ -1,7 +1,7 @@
 export function SiteFooter() {
   return (
     <footer className="border-t border-line bg-olive-deep text-paper">
-      <div className="mx-auto flex max-w-[1320px] flex-col gap-10 px-5 py-14 md:flex-row md:items-start md:justify-between lg:px-10">
+      <div className="mx-auto flex max-w-[1320px] flex-col gap-10 px-5 py-10 md:flex-row md:items-start md:justify-between lg:px-10">
         <div className="max-w-xs">
           <p className="font-serif text-2xl italic">Getzemani</p>
           <p className="mt-3 text-sm leading-6 text-paper/70">
