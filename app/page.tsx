@@ -119,10 +119,8 @@ export default async function Home({
         <div className="mx-auto grid max-w-[1320px] grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-4 lg:gap-10">
           {WAY.map(([title, text]) => (
             <div key={title} className="max-w-xs">
-              <p className="text-[11px] font-semibold uppercase tracking-[.18em] text-terracotta">
-                {title}
-              </p>
-              <p className="mt-3 text-sm leading-6 text-ink-soft">{text}</p>
+              <p className="font-serif text-lg text-terracotta">{title}</p>
+              <p className="mt-2 text-sm leading-6 text-ink-soft">{text}</p>
             </div>
           ))}
         </div>
@@ -132,7 +130,7 @@ export default async function Home({
       {featured.length > 0 && (
         <Reveal
           as="section"
-          className="mx-auto max-w-[1320px] px-5 py-20 lg:px-10 lg:py-28"
+          className="mx-auto max-w-[1320px] px-5 py-16 lg:px-10 lg:py-24"
         >
           <div className="mb-12 max-w-xl">
             <p className="mb-4 text-[11px] font-semibold uppercase tracking-[.22em] text-terracotta">
@@ -155,7 +153,7 @@ export default async function Home({
 
       <section
         id="shop"
-        className="mx-auto max-w-[1320px] px-5 pb-20 lg:px-10 lg:pb-28"
+        className="mx-auto max-w-[1320px] px-5 pb-16 lg:px-10 lg:pb-24"
       >
         <div className="mb-10 max-w-xl">
           <h2 className="font-serif text-4xl leading-none tracking-[-.03em] text-ink lg:text-5xl">
@@ -177,7 +175,7 @@ export default async function Home({
         <Reveal
           as="section"
           id="rituals"
-          className="border-y border-line bg-paper-deep px-5 py-20 lg:px-10 lg:py-28"
+          className="border-y border-line bg-paper-deep px-5 py-16 lg:px-10 lg:py-24"
         >
           <div className="mx-auto max-w-[1320px]">
             <div className="mb-12 max-w-xl">
@@ -187,12 +185,11 @@ export default async function Home({
               <h2 className="font-serif text-5xl leading-none tracking-[-.03em] text-ink lg:text-6xl">
                 Find your ritual.
               </h2>
-              <p className="mt-5 text-base leading-7 text-ink-soft">
-                Explore simple essentials designed around the way you care for
-                yourself.
+              <p className="mt-5 max-w-md text-base leading-7 text-ink-soft">
+                Choose the part of your everyday life you want to care for.
               </p>
             </div>
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-6 sm:grid-cols-2">
               {ritualCollections.map(
                 (collection) =>
                   collection && (
@@ -201,12 +198,12 @@ export default async function Home({
                       href={`/?category=${collection.handle}#shop`}
                       className="group block"
                     >
-                      <div className="aspect-[4/5] overflow-hidden bg-card">
+                      <div className="aspect-[4/3] overflow-hidden bg-card">
                         {collection.image ? (
                           <img
                             src={collection.image.url}
                             alt={collection.image.altText || collection.title}
-                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
                             loading="lazy"
                           />
                         ) : (
@@ -215,16 +212,16 @@ export default async function Home({
                       </div>
                       <div className="flex items-start justify-between gap-3 pt-5">
                         <div>
-                          <h3 className="font-serif text-2xl text-ink">
+                          <h3 className="font-serif text-3xl text-ink">
                             {collection.handle === "movement"
                               ? "Wellness"
                               : collection.title}
                           </h3>
-                          <p className="mt-2 max-w-[180px] text-sm leading-6 text-ink-soft">
+                          <p className="mt-2 text-sm leading-6 text-ink-soft">
                             {RITUAL_TAGLINE[collection.handle] ?? ""}
                           </p>
                         </div>
-                        <span className="underline-grow shrink-0 pt-1 text-[11px] font-semibold uppercase tracking-[.12em] text-terracotta">
+                        <span className="underline-grow shrink-0 pt-1.5 text-sm text-terracotta">
                           Shop
                         </span>
                       </div>
@@ -236,42 +233,46 @@ export default async function Home({
         </Reveal>
       )}
 
-      {/* Philosophy + final CTA -- one editorial moment, not two */}
+      {/* Editorial visual moment -- a pure breathing pause between rituals and the brand */}
+      <Reveal as="section" id="philosophy" className="relative flex h-[70vh] min-h-[440px] items-center overflow-hidden">
+        <img
+          src="https://images.unsplash.com/photo-1585652757173-57de5e9fab42?auto=format&fit=crop&w=1800&q=85"
+          alt="A quiet corner set up for an evening ritual"
+          className="absolute inset-0 h-full w-full object-cover"
+          loading="lazy"
+        />
+        <div aria-hidden className="absolute inset-0 bg-olive-deep/55" />
+        <div className="relative mx-auto w-full max-w-[1320px] px-5 lg:px-10">
+          <h2 className="max-w-xl font-serif text-[clamp(2.75rem,6vw,5rem)] leading-[.95] tracking-[-.03em] text-paper">
+            Feel better.
+            <br />
+            <em>Do less.</em>
+          </h2>
+          <p className="mt-6 max-w-md text-base leading-7 text-paper/85">
+            Most wellness brands sell you more to do. We&apos;d rather give
+            you less to think about.
+          </p>
+        </div>
+      </Reveal>
+
+      {/* Final CTA */}
       <Reveal
         as="section"
-        id="philosophy"
-        className="bg-olive-deep px-5 py-20 text-paper lg:px-10 lg:py-28"
+        className="bg-olive-deep px-5 py-20 text-center text-paper lg:px-10 lg:py-28"
       >
-        <div className="mx-auto grid max-w-[1320px] items-center gap-12 lg:grid-cols-[1fr_.8fr] lg:gap-20">
-          <div>
-            <p className="mb-5 text-[11px] font-semibold uppercase tracking-[.22em] text-paper/60">
-              Our philosophy
-            </p>
-            <h2 className="max-w-xl font-serif text-[clamp(2.75rem,5.5vw,4.5rem)] leading-[.95] tracking-[-.03em]">
-              Feel better.
-              <br />
-              <em>Do less.</em>
-            </h2>
-            <p className="mt-6 max-w-md text-base leading-7 text-paper/75">
-              Most wellness brands tell you to do more — more routines, more
-              products, more steps. Getzemani takes a different approach: simple
-              essentials for the rituals that matter.
-            </p>
-            <a
-              href="#shop"
-              className="mt-8 inline-block bg-terracotta px-7 py-4 text-xs font-semibold uppercase tracking-[.12em] text-paper transition-colors hover:bg-terracotta-deep"
-            >
-              Shop Getzemani
-            </a>
-          </div>
-          <div className="aspect-[4/5] overflow-hidden">
-            <img
-              src="https://images.unsplash.com/photo-1585652757173-57de5e9fab42?auto=format&fit=crop&w=1000&q=85"
-              alt="A quiet corner set up for an evening ritual"
-              className="h-full w-full object-cover"
-              loading="lazy"
-            />
-          </div>
+        <div className="mx-auto max-w-xl">
+          <h2 className="font-serif text-4xl leading-tight tracking-[-.02em] lg:text-5xl">
+            Make space for your ritual.
+          </h2>
+          <p className="mt-5 text-base leading-7 text-paper/75">
+            Discover simple essentials for skin, body and everyday wellness.
+          </p>
+          <a
+            href="#shop"
+            className="mt-8 inline-block bg-terracotta px-8 py-4 text-xs font-semibold uppercase tracking-[.12em] text-paper transition-colors hover:bg-terracotta-deep"
+          >
+            Shop Getzemani
+          </a>
         </div>
       </Reveal>
 
