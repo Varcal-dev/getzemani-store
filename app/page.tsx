@@ -29,7 +29,14 @@ const WAY = [
   ["Human", "Real support from real people."],
 ];
 
-const RITUAL_HANDLES = ["skin", "body", "wellness", "movement"];
+const RITUAL_HANDLES = ["skin", "body", "movement", "home"];
+
+const RITUAL_TAGLINE: Record<string, string> = {
+  skin: "Glow & care",
+  body: "Everyday self-care",
+  movement: "Slow down & feel better",
+  home: "Create your space",
+};
 
 // The four products the Edit opens with -- confirmed live on the store
 const EDIT_HANDLES = [
@@ -67,24 +74,24 @@ export default async function Home({
       {/* Hero -- full-bleed editorial campaign, header rides transparent on top */}
       <section className="relative flex h-[86vh] min-h-[560px] items-end overflow-hidden lg:h-[92vh]">
         <img
-          src="https://images.unsplash.com/photo-1600334129128-685c5582fd35?auto=format&fit=crop&w=2200&q=85"
-          alt="A quiet personal care ritual with natural materials"
+          src="https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=2200&q=85"
+          alt="A quiet skincare ritual with a jade facial roller on natural linen"
           className="hero-image-in absolute inset-0 h-full w-full object-cover"
         />
         <div
           aria-hidden
-          className="absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/10 to-transparent"
+          className="absolute inset-0 bg-gradient-to-t from-ink/75 via-ink/15 to-transparent"
         />
         <div className="hero-rise relative mx-auto w-full max-w-[1320px] px-5 pb-16 lg:px-10 lg:pb-24">
           <p className="mb-4 text-[11px] font-semibold uppercase tracking-[.3em] text-paper/80">
             Getzemani
           </p>
           <h1 className="max-w-2xl text-balance font-serif text-[clamp(2.75rem,6vw,5.5rem)] leading-[.98] tracking-[-.03em] text-paper">
-            Your everyday ritual, elevated.
+            Care, at the pace of a garden.
           </h1>
           <p className="mt-6 max-w-md text-base leading-7 text-paper/85">
-            Thoughtfully selected essentials for skin, body &amp; everyday
-            wellness.
+            Skincare, wellness, and everyday essentials designed for people
+            who&apos;d rather feel better than do more.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-4">
             <a
@@ -132,8 +139,11 @@ export default async function Home({
               The Getzemani edit
             </p>
             <h2 className="font-serif text-5xl leading-none tracking-[-.03em] text-ink lg:text-6xl">
-              A few things worth making space for.
+              Your everyday ritual.
             </h2>
+            <p className="mt-5 text-base leading-7 text-ink-soft">
+              Four simple essentials worth making space for.
+            </p>
           </div>
           <div className="grid grid-cols-2 gap-x-4 gap-y-12 lg:grid-cols-4 lg:gap-x-6">
             {featured.map((product) => (
@@ -211,13 +221,7 @@ export default async function Home({
                               : collection.title}
                           </h3>
                           <p className="mt-2 max-w-[180px] text-sm leading-6 text-ink-soft">
-                            {collection.handle === "skin"
-                              ? "Face care, blemish care & beauty tools."
-                              : collection.handle === "body"
-                                ? "Personal care & everyday essentials."
-                                : collection.handle === "home"
-                                  ? "Atmosphere, comfort & everyday spaces."
-                                  : "Rest, relaxation & daily wellbeing."}
+                            {RITUAL_TAGLINE[collection.handle] ?? ""}
                           </p>
                         </div>
                         <span className="underline-grow shrink-0 pt-1 text-[11px] font-semibold uppercase tracking-[.12em] text-terracotta">

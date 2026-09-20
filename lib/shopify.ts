@@ -79,6 +79,7 @@ export type Product = {
   handle: string
   description: string
   descriptionHtml?: string
+  productType?: string
   featuredImage?: ProductImage
   images?: { nodes: ProductImage[] }
   priceRange: { minVariantPrice: Money }
@@ -157,7 +158,7 @@ export async function getCollectionProducts(handle: string) {
 export async function getProduct(handle: string) {
   const query = `query ProductByHandle($handle: String!) {
     product(handle: $handle) {
-      id title handle description descriptionHtml
+      id title handle description descriptionHtml productType
       featuredImage { url altText width height }
       images(first: 6) { nodes { url altText width height } }
       priceRange { minVariantPrice { amount currencyCode } }
