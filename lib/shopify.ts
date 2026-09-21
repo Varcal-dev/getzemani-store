@@ -100,7 +100,7 @@ const PRODUCT_CARD_FIELDS = `
 
 export async function getStorefront() {
   const query = `query Storefront {
-    products(first: 8, sortKey: BEST_SELLING) {
+    products(first: 24, sortKey: BEST_SELLING) {
       nodes {
         ${PRODUCT_CARD_FIELDS}
       }
@@ -146,7 +146,7 @@ export async function getCollectionProducts(handle: string) {
       id
       title
       handle
-      products(first: 8, sortKey: BEST_SELLING) {
+      products(first: 24, sortKey: BEST_SELLING) {
         nodes { ${PRODUCT_CARD_FIELDS} }
       }
     }
