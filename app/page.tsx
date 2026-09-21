@@ -1,3 +1,78 @@
+
+/
+Claude terminó la respuesta
+Se ejecutaron 3 comandos, archivo leído, archivos compartidos
+Con el documento completo, apliqué lo que faltaba (secciones 6–14 principalmente). tsc --noEmit y next build pasan limpio.
+
+Lo nuevo que agregué:
+
+§6/§7 — Momento editorial separado del CTA final: antes tenía "Feel better. Do less." fusionado con el botón de compra (una sola sección, herencia de mi fusión de Fase 1). El doc pide dos cosas distintas: una pausa emocional pura (sin botón, imagen a todo lo ancho) y un CTA de cierre aparte. Los separé: ahora hay un momento de respiro visual (imagen full-bleed + "Feel better. Do less.") y, después, un CTA final propio con el copy original que pediste — "Make space for your ritual." + "Discover simple essentials for skin, body and everyday wellness." + botón "Shop Getzemani" — sobre fondo verde oscuro sólido.
+§5 — Find your ritual en 2×2: pasé de 4 columnas en una fila a una grilla 2×2 en desktop, con paneles bastante más grandes (como pedía "avoid tiny category cards").
+§12 — Menos mayúsculas: los títulos de "The Getzemani Way" (Curated/Simple/Thoughtful/Human) ya no van en mayúsculas con tracking — ahora en serif normal, más cálido. Dejé las mayúsculas solo donde tiene sentido comercial (botones, eyebrows de sección).
+§13 — Espaciado: recorté el padding vertical de "The Getzemani Edit", el grid general y "Find your ritual" (de py-20/py-28 a py-16/py-24) — mantuve el hero y las secciones de cierre con su espacio generoso, que es donde sí pedía "breathing room".
+Lo que confirmé que ya estaba bien (no lo toqué):
+
+§4 (4 productos, no 8) y la mayoría de tarjetas editoriales — ya resuelto la vuelta pasada.
+§8 (trust strip fusionado, sin duplicar) — ya resuelto en Fase 1.
+§11 (verde 
+#36483D) — ya era el valor correcto desde Fase 1.
+§10 (footer) — ya cumplía la estructura pedida, no necesitó cambios.
+Una observación honesta: §16 pide revisar específicamente en 390/375/360px. No tengo un navegador real para tomar capturas en esos anchos exactos — lo que hice fue revisar que las clases responsive (grids, clamp() en tipografía, grid-cols-2 en mobile) se comporten razonablemente a esos tamaños, pero no es una verificación visual real dispositivo por dispositivo. Si quieres, te paso el link de vista previa y lo revisas tú mismo en el celular antes de dar por cerrada la fase — es la forma más confiable de confirmarlo.
+
+
+Getzemani fase1.5 parte2 archivos
+ZIP 
+
+Getzemani fase1.5 parte2
+DIFF 
+podrias hacer esto:
+ escriba lib/shopify.ts y app/page.tsx completos, con el límite corregido y los cuatro destacados actualizados?
+
+Se leyeron 2 memorias
+Antes de escribirte los archivos completos, me faltan dos datos concretos que no tengo — y prefiero no inventarlos, porque si adivino mal puede romper el build o mostrar productos que no existen:
+
+Los cuatro destacados: ahora mismo "The Getzemani Edit" usa estos 4 handles (verificados hace unas vueltas):
+facial-cleansing-brush
+nail-care-serum
+turmeric-ginger-cinnamon-tea
+salt-rock-aromatherapy-diffuser
+Con el replanteo del catálogo (los 15-20 productos de CJ, bodega EE. UU., envío gratis) — ¿cuáles 4 productos reales quieres destacar ahora? Necesito el handle exacto de cada uno (el slug que va en la URL /products/<handle>), como me diste la vez pasada.
+El límite corregido: ¿a qué te refieres exactamente?
+¿El límite de productos que trae getStorefront() para la grilla general (products(first: 8) en lib/shopify.ts), que debería subir ahora que el catálogo va a tener 15-20 productos?
+¿O es otro límite (colecciones, algo del carrito, otra cosa)?
+Con esos dos datos te devuelvo los dos archivos completos, tal como los pides.
+
+https://www.getzemani.store/products/led-facial-beauty-mask-for-at-home-skincareled-facial-beauty-mask
+https://www.getzemani.store/products/natural-resin-gua-sha-facial-massage-tool
+https://www.getzemani.store/products/facial-cleansing-brush-3in1-rechargeable
+https://www.getzemani.store/products/salt-rock-aromatherapy-diffuser
+y si, ese limite. el de la grilla de 8
+
+Se ejecutaron 3 comandos, archivo leído
+Ahora edito el límite en ambos lugares (grilla general y grilla por colección) de 8 a 24, para que quepa el catálogo ampliado de 15-20 productos con margen:
+
+Editó 2 archivos, se ejecutaron 4 comandos y 2 herramientas más
+Ahí tienes ambos archivos completos. Cambios aplicados:
+
+lib/shopify.ts — subí el límite de products(first: 8, ...) a first: 24 en las dos consultas que lo usaban (getStorefront para la grilla general, y getCollectionProducts para cuando filtras por colección). Con 24 hay margen de sobra para tu catálogo de 15-20 productos sin quedarte corto; si terminas con más de 24, avísame y lo subo otra vez. No toqué el límite de colecciones (first: 6) porque no lo mencionaste.
+
+app/page.tsx — actualicé EDIT_HANDLES con tus 4 productos nuevos (noté que el del LED tiene el slug duplicado tal cual lo mandaste — led-facial-beauty-mask-for-at-home-skincareled-facial-beauty-mask — lo dejé exacto porque así aparece en tu URL real).
+
+Verifiqué con tsc --noEmit y next build completos, ambos limpios.
+
+
+Page
+Código·TSX 
+
+Shopify
+TS 
+
+
+
+Claude es una IA y puede cometer errores. Verifica siempre las respuestas.
+
+
+Page · TSX
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { ProductCard } from "@/components/product-card";
@@ -8,19 +83,19 @@ import {
   getProduct,
   getStorefront,
 } from "@/lib/shopify";
-
+ 
 declare global {
   namespace JSX {
     interface IntrinsicAttributes {
       key?: string | number | symbol | null;
     }
-
+ 
     interface IntrinsicElements {
       [elemName: string]: any;
     }
   }
 }
-
+ 
 // "The Getzemani Way" -- doubles as the trust strip, so the promise isn't repeated twice
 const WAY = [
   ["Curated", "We don't believe in more. We believe in better choices."],
@@ -28,24 +103,24 @@ const WAY = [
   ["Thoughtful", "Beauty and wellness without unnecessary complexity."],
   ["Human", "Real support from real people."],
 ];
-
+ 
 const RITUAL_HANDLES = ["skin", "body", "movement", "home"];
-
+ 
 const RITUAL_TAGLINE: Record<string, string> = {
   skin: "Glow & care",
   body: "Everyday self-care",
   movement: "Slow down & feel better",
   home: "Create your space",
 };
-
+ 
 // The four products the Edit opens with -- confirmed live on the store
 const EDIT_HANDLES = [
-  "facial-cleansing-brush",
-  "nail-care-serum",
-  "turmeric-ginger-cinnamon-tea",
+  "led-facial-beauty-mask-for-at-home-skincareled-facial-beauty-mask",
+  "natural-resin-gua-sha-facial-massage-tool",
+  "facial-cleansing-brush-3in1-rechargeable",
   "salt-rock-aromatherapy-diffuser",
 ];
-
+ 
 export default async function Home({
   searchParams,
 }: {
@@ -57,7 +132,7 @@ export default async function Home({
     category ? getCollectionProducts(category) : Promise.resolve(null),
     Promise.all(EDIT_HANDLES.map((handle) => getProduct(handle))),
   ]);
-
+ 
   const products = selectedCollection?.products.nodes ?? data.products.nodes;
   const collections = data.collections.nodes;
   const ritualCollections = RITUAL_HANDLES.map((handle) =>
@@ -66,11 +141,11 @@ export default async function Home({
     .filter(Boolean)
     .slice(0, 4);
   const featured = editProducts.filter(Boolean);
-
+ 
   return (
     <main id="top" className="min-h-screen bg-paper">
       <SiteHeader collections={collections} overMedia />
-
+ 
       {/* Hero -- full-bleed editorial campaign, header rides transparent on top */}
       <section className="relative flex h-[86vh] min-h-[560px] items-end overflow-hidden lg:h-[92vh]">
         <img
@@ -109,7 +184,7 @@ export default async function Home({
           </div>
         </div>
       </section>
-
+ 
       {/* The Getzemani Way -- brand promise, doubling as the trust strip */}
       <Reveal
         as="section"
@@ -125,7 +200,7 @@ export default async function Home({
           ))}
         </div>
       </Reveal>
-
+ 
       {/* The Getzemani Edit -- four featured products */}
       {featured.length > 0 && (
         <Reveal
@@ -150,7 +225,7 @@ export default async function Home({
           </div>
         </Reveal>
       )}
-
+ 
       <section
         id="shop"
         className="mx-auto max-w-[1320px] px-5 pb-16 lg:px-10 lg:pb-24"
@@ -170,7 +245,7 @@ export default async function Home({
           )}
         </div>
       </section>
-
+ 
       {ritualCollections.length > 0 && (
         <Reveal
           as="section"
@@ -232,7 +307,7 @@ export default async function Home({
           </div>
         </Reveal>
       )}
-
+ 
       {/* Editorial visual moment -- a pure breathing pause between rituals and the brand */}
       <Reveal as="section" id="philosophy" className="relative flex h-[70vh] min-h-[440px] items-center overflow-hidden">
         <img
@@ -254,7 +329,7 @@ export default async function Home({
           </p>
         </div>
       </Reveal>
-
+ 
       {/* Final CTA */}
       <Reveal
         as="section"
@@ -275,8 +350,9 @@ export default async function Home({
           </a>
         </div>
       </Reveal>
-
+ 
       <SiteFooter />
     </main>
   );
 }
+ 
