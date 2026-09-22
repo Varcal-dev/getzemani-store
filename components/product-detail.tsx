@@ -24,17 +24,7 @@ function ProductDescription({ description }: { description: string }) {
 
     return doc.body.innerHTML;
   }, [description]);
-console.log("GETZEMANI STOCK DEBUG", {
-  product: product.title,
-  variants: product.variants.nodes.map((v) => ({
-    id: v.id,
-    title: v.title,
-    availableForSale: v.availableForSale,
-    selectedOptions: v.selectedOptions,
-  })),
-  selected,
-  selectedVariant: variant,
-});
+
   return (
     <div
       className="
@@ -159,9 +149,7 @@ export function ProductDetail({ product }: { product: Product }) {
       ) ?? product.variants.nodes[0],
     [product.variants.nodes, selected],
   );
-
-  const [justAdded, setJustAdded] = useState(false);
-  console.log("=== GETZEMANI STOCK DEBUG ===");
+console.log("=== GETZEMANI STOCK DEBUG ===");
 console.log("Product:", product.title);
 console.log(
   "Variants:",
@@ -172,6 +160,8 @@ console.log(
     selectedOptions: v.selectedOptions,
   })),
 );
+  const [justAdded, setJustAdded] = useState(false);
+  
 console.log("Selected:", selected);
 console.log("Selected variant:", variant);
 console.log("==============================");
