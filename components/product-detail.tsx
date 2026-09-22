@@ -24,7 +24,17 @@ function ProductDescription({ description }: { description: string }) {
 
     return doc.body.innerHTML;
   }, [description]);
-
+console.log("GETZEMANI STOCK DEBUG", {
+  product: product.title,
+  variants: product.variants.nodes.map((v) => ({
+    id: v.id,
+    title: v.title,
+    availableForSale: v.availableForSale,
+    selectedOptions: v.selectedOptions,
+  })),
+  selected,
+  selectedVariant: variant,
+});
   return (
     <div
       className="
