@@ -1,5 +1,5 @@
 "use client";
-
+console.log("🔥 PRODUCT DETAIL CARGADO");
 import { useMemo, useState } from "react";
 
 import type { Product } from "@/lib/shopify";
