@@ -161,6 +161,20 @@ export function ProductDetail({ product }: { product: Product }) {
   );
 
   const [justAdded, setJustAdded] = useState(false);
+  console.log("=== GETZEMANI STOCK DEBUG ===");
+console.log("Product:", product.title);
+console.log(
+  "Variants:",
+  product.variants.nodes.map((v) => ({
+    id: v.id,
+    title: v.title,
+    availableForSale: v.availableForSale,
+    selectedOptions: v.selectedOptions,
+  })),
+);
+console.log("Selected:", selected);
+console.log("Selected variant:", variant);
+console.log("==============================");
 
   async function handleAdd() {
     if (!variant) return;
