@@ -1,5 +1,4 @@
 "use client";
-console.log("🔥 PRODUCT DETAIL CARGADO");
 import { useMemo, useState } from "react";
 
 import type { Product } from "@/lib/shopify";
@@ -150,10 +149,6 @@ export function ProductDetail({ product }: { product: Product }) {
     [product.variants.nodes, selected],
   );
   const [justAdded, setJustAdded] = useState(false);
-  
-console.log("Selected:", selected);
-console.log("Selected variant:", variant);
-console.log("==============================");
 
   async function handleAdd() {
     if (!variant) return;
