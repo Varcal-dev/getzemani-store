@@ -92,10 +92,37 @@ export type Collection = { id: string; title: string; handle: string; image?: { 
 export type CollectionProducts = { id: string; title: string; handle: string; products: { nodes: Product[] } }
 
 const PRODUCT_CARD_FIELDS = `
-  id title handle description
-  featuredImage { url altText width height }
-  priceRange { minVariantPrice { amount currencyCode } }
-  variants(first: 1) { nodes { id title availableForSale price { amount currencyCode } selectedOptions { name value } } }
+  id
+  title
+  handle
+  description
+  featuredImage {
+    url
+    altText
+    width
+    height
+  }
+  priceRange {
+    minVariantPrice {
+      amount
+      currencyCode
+    }
+  }
+  variants(first: 20) {
+    nodes {
+      id
+      title
+      availableForSale
+      price {
+        amount
+        currencyCode
+      }
+      selectedOptions {
+        name
+        value
+      }
+    }
+  }
 `
 
 export async function getStorefront() {
