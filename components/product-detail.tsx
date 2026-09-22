@@ -149,17 +149,6 @@ export function ProductDetail({ product }: { product: Product }) {
       ) ?? product.variants.nodes[0],
     [product.variants.nodes, selected],
   );
-console.log("=== GETZEMANI STOCK DEBUG ===");
-console.log("Product:", product.title);
-console.log(
-  "Variants:",
-  product.variants.nodes.map((v) => ({
-    id: v.id,
-    title: v.title,
-    availableForSale: v.availableForSale,
-    selectedOptions: v.selectedOptions,
-  })),
-);
   const [justAdded, setJustAdded] = useState(false);
   
 console.log("Selected:", selected);
