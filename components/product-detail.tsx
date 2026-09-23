@@ -28,7 +28,6 @@ function ProductDescription({ description }: { description: string }) {
     <div
       className="
         product-description
-        mt-8
         text-sm
         leading-7
         text-ink-soft
@@ -129,22 +128,17 @@ export function ProductDetail({ product }: { product: Product }) {
 
   const options =
     product.options?.filter(
-      (o) =>
-        o.values.length > 1 || o.name.toLowerCase() !== "title",
+      (o) => o.values.length > 1 || o.name.toLowerCase() !== "title",
     ) ?? [];
 
   const [selected, setSelected] = useState<Record<string, string>>(() =>
-    Object.fromEntries(
-      options.map((o) => [o.name, o.values[0]]),
-    ),
+    Object.fromEntries(options.map((o) => [o.name, o.values[0]])),
   );
 
   const variant = useMemo(
     () =>
       product.variants.nodes.find((v) =>
-        v.selectedOptions.every(
-          (so) => selected[so.name] === so.value,
-        ),
+        v.selectedOptions.every((so) => selected[so.name] === so.value),
       ) ?? product.variants.nodes[0],
     [product.variants.nodes, selected],
   );
@@ -163,18 +157,81 @@ export function ProductDetail({ product }: { product: Product }) {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1.05fr_.95fr] lg:gap-20">
-      {/* LEFT: PRODUCT GALLERY */}
-      <div>
-        <div className="aspect-[4/5] overflow-hidden bg-card">
+    <div className="mx-auto max-w-2xl">
+      {/* 1. NAME */}
+      <p className="mb-4 text-[11px] font-semibold uppercase tracking-[.2em] text-olive">
+        Getzemani ritual
+      </p>
+
+      <h1 className="font-serif text-5xl leading-[.95] tracking-[-.03em] text-ink">
+        {product.title}
+      </h1>
+
+      {/* 2. VARIANTS */}
+      {options.map((option) => (
+        <div key={option.name} className="mt-8 border-t border-line pt-5">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[.14em] text-ink-soft">
+            {option.name}
+          </p>
+
+          <div className="flex flex-wrap gap-2">
+            {option.values.map((value) => (
+              <button
+                key={value}
+                onClick={() =>
+                  setSelected((prev) => ({
+                    ...prev,
+                    [option.name]: value,
+                  }))
+                }
+                className={`border px-4 py-2 text-xs transition-colors ${
+                  selected[option.name] === value
+                    ? "border-olive-deep bg-olive-deep text-paper"
+                    : "border-line text-ink-soft hover:border-ink"
+                }`}
+              >
+                {value}
+              </button>
+            ))}
+          </div>
+        </div>
+      ))}
+
+      {/* 3. PRICE */}
+      {variant && (
+        <p className="mt-6 text-lg text-ink">
+          {formatMoney(variant.price.amount, variant.price.currencyCode)}
+        </p>
+      )}
+
+      {/* 4. ADD TO BAG */}
+      <button
+        onClick={handleAdd}
+        disabled={isLoading || !variant?.availableForSale}
+        className="mt-6 w-full bg-olive-deep py-4 text-sm text-paper transition-colors hover:bg-olive disabled:opacity-40 sm:w-auto sm:px-12"
+      >
+        {!variant?.availableForSale
+          ? "Sold out"
+          : justAdded
+            ? "Added to bag"
+            : "Add to bag"}
+      </button>
+
+      {/* 5. DETAILS */}
+      <div className="mt-10 border-t border-line pt-8">
+        <ProductDescription
+          description={product.descriptionHtml ?? product.description}
+        />
+      </div>
+
+      {/* 6. IMAGES */}
+      <div className="mt-10">
+        <div className="flex aspect-square items-center justify-center overflow-hidden bg-card">
           {galleryImages[activeImage] ? (
             <img
               src={galleryImages[activeImage].url}
-              alt={cleanAlt(
-                galleryImages[activeImage].altText,
-                product.title,
-              )}
-              className="h-full w-full object-cover"
+              alt={cleanAlt(galleryImages[activeImage].altText, product.title)}
+              className="h-full w-full object-contain"
             />
           ) : (
             <div className="flex h-full items-center justify-center text-xs text-ink-soft">
@@ -189,96 +246,16 @@ export function ProductDetail({ product }: { product: Product }) {
               <button
                 key={`${img.url}-${i}`}
                 onClick={() => setActiveImage(i)}
-                className={`size-16 shrink-0 overflow-hidden border transition-colors ${
-                  i === activeImage
-                    ? "border-olive-deep"
-                    : "border-line"
+                className={`flex size-16 shrink-0 items-center justify-center overflow-hidden border bg-card transition-colors ${
+                  i === activeImage ? "border-olive-deep" : "border-line"
                 }`}
                 aria-label={`View image ${i + 1}`}
               >
-                <img
-                  src={img.url}
-                  alt=""
-                  className="h-full w-full object-cover"
-                />
+                <img src={img.url} alt="" className="h-full w-full object-contain" />
               </button>
             ))}
           </div>
         )}
-      </div>
-
-      {/* RIGHT: PRODUCT INFORMATION */}
-      <div className="lg:sticky lg:top-8 lg:self-start lg:pt-3">
-        <p className="mb-4 text-[11px] font-semibold uppercase tracking-[.2em] text-olive">
-          Getzemani ritual
-        </p>
-
-        <h1 className="font-serif text-5xl leading-[.95] tracking-[-.03em] text-ink">
-          {product.title}
-        </h1>
-
-        {variant && (
-          <p className="mt-5 text-sm text-ink-soft">
-            {formatMoney(
-              variant.price.amount,
-              variant.price.currencyCode,
-            )}
-          </p>
-        )}
-
-        <ProductDescription
-          description={
-            product.descriptionHtml ?? product.description
-          }
-        />
-
-        {/* OPTIONS */}
-        {options.map((option) => (
-          <div
-            key={option.name}
-            className="mt-8 border-t border-line pt-5"
-          >
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[.14em] text-ink-soft">
-              {option.name}
-            </p>
-
-            <div className="flex flex-wrap gap-2">
-              {option.values.map((value) => (
-                <button
-                  key={value}
-                  onClick={() =>
-                    setSelected((prev) => ({
-                      ...prev,
-                      [option.name]: value,
-                    }))
-                  }
-                  className={`border px-4 py-2 text-xs transition-colors ${
-                    selected[option.name] === value
-                      ? "border-olive-deep bg-olive-deep text-paper"
-                      : "border-line text-ink-soft hover:border-ink"
-                  }`}
-                >
-                  {value}
-                </button>
-              ))}
-            </div>
-          </div>
-        ))}
-
-        {/* ADD TO CART */}
-        <button
-          onClick={handleAdd}
-          disabled={
-            isLoading || !variant?.availableForSale
-          }
-          className="mt-10 w-full bg-olive-deep py-4 text-sm text-paper transition-colors hover:bg-olive disabled:opacity-40 sm:w-auto sm:px-12"
-        >
-          {!variant?.availableForSale
-            ? "Sold out"
-            : justAdded
-              ? "Added to bag"
-              : "Add to bag"}
-        </button>
       </div>
     </div>
   );
