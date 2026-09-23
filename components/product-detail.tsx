@@ -157,75 +157,9 @@ export function ProductDetail({ product }: { product: Product }) {
   }
 
   return (
-    <div className="mx-auto max-w-2xl">
-      {/* 1. NAME */}
-      <p className="mb-4 text-[11px] font-semibold uppercase tracking-[.2em] text-olive">
-        Getzemani ritual
-      </p>
-
-      <h1 className="font-serif text-5xl leading-[.95] tracking-[-.03em] text-ink">
-        {product.title}
-      </h1>
-
-      {/* 2. VARIANTS */}
-      {options.map((option) => (
-        <div key={option.name} className="mt-8 border-t border-line pt-5">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-[.14em] text-ink-soft">
-            {option.name}
-          </p>
-
-          <div className="flex flex-wrap gap-2">
-            {option.values.map((value) => (
-              <button
-                key={value}
-                onClick={() =>
-                  setSelected((prev) => ({
-                    ...prev,
-                    [option.name]: value,
-                  }))
-                }
-                className={`border px-4 py-2 text-xs transition-colors ${
-                  selected[option.name] === value
-                    ? "border-olive-deep bg-olive-deep text-paper"
-                    : "border-line text-ink-soft hover:border-ink"
-                }`}
-              >
-                {value}
-              </button>
-            ))}
-          </div>
-        </div>
-      ))}
-
-      {/* 3. PRICE */}
-      {variant && (
-        <p className="mt-6 text-lg text-ink">
-          {formatMoney(variant.price.amount, variant.price.currencyCode)}
-        </p>
-      )}
-
-      {/* 4. ADD TO BAG */}
-      <button
-        onClick={handleAdd}
-        disabled={isLoading || !variant?.availableForSale}
-        className="mt-6 w-full bg-olive-deep py-4 text-sm text-paper transition-colors hover:bg-olive disabled:opacity-40 sm:w-auto sm:px-12"
-      >
-        {!variant?.availableForSale
-          ? "Sold out"
-          : justAdded
-            ? "Added to bag"
-            : "Add to bag"}
-      </button>
-
-      {/* 5. DETAILS */}
-      <div className="mt-10 border-t border-line pt-8">
-        <ProductDescription
-          description={product.descriptionHtml ?? product.description}
-        />
-      </div>
-
-      {/* 6. IMAGES */}
-      <div className="mt-10">
+    <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1.05fr_.95fr] lg:gap-20">
+      {/* LEFT: IMAGES */}
+      <div>
         <div className="flex aspect-square items-center justify-center overflow-hidden bg-card">
           {galleryImages[activeImage] ? (
             <img
@@ -256,6 +190,75 @@ export function ProductDetail({ product }: { product: Product }) {
             ))}
           </div>
         )}
+      </div>
+
+      {/* RIGHT: PRODUCT INFORMATION */}
+      <div className="lg:sticky lg:top-8 lg:self-start lg:pt-3">
+        {/* 1. NAME */}
+        <p className="mb-4 text-[11px] font-semibold uppercase tracking-[.2em] text-olive">
+          Getzemani ritual
+        </p>
+
+        <h1 className="font-serif text-5xl leading-[.95] tracking-[-.03em] text-ink">
+          {product.title}
+        </h1>
+
+        {/* 2. VARIANTS */}
+        {options.map((option) => (
+          <div key={option.name} className="mt-8 border-t border-line pt-5">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[.14em] text-ink-soft">
+              {option.name}
+            </p>
+
+            <div className="flex flex-wrap gap-2">
+              {option.values.map((value) => (
+                <button
+                  key={value}
+                  onClick={() =>
+                    setSelected((prev) => ({
+                      ...prev,
+                      [option.name]: value,
+                    }))
+                  }
+                  className={`border px-4 py-2 text-xs transition-colors ${
+                    selected[option.name] === value
+                      ? "border-olive-deep bg-olive-deep text-paper"
+                      : "border-line text-ink-soft hover:border-ink"
+                  }`}
+                >
+                  {value}
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
+
+        {/* 3. PRICE */}
+        {variant && (
+          <p className="mt-6 text-lg text-ink">
+            {formatMoney(variant.price.amount, variant.price.currencyCode)}
+          </p>
+        )}
+
+        {/* 4. ADD TO BAG */}
+        <button
+          onClick={handleAdd}
+          disabled={isLoading || !variant?.availableForSale}
+          className="mt-6 w-full bg-olive-deep py-4 text-sm text-paper transition-colors hover:bg-olive disabled:opacity-40 sm:w-auto sm:px-12"
+        >
+          {!variant?.availableForSale
+            ? "Sold out"
+            : justAdded
+              ? "Added to bag"
+              : "Add to bag"}
+        </button>
+
+        {/* 5. DETAILS */}
+        <div className="mt-10 border-t border-line pt-8">
+          <ProductDescription
+            description={product.descriptionHtml ?? product.description}
+          />
+        </div>
       </div>
     </div>
   );
