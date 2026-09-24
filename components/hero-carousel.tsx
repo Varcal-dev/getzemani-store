@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 const slides = [
   {
-    image: '/hero/carru1.png',
+    image: '/hero/ful_carru_sintex1.png',
     eyebrow: 'The Getzemani Edit',
     label: 'Daily rituals, refined',
     title: 'Beauty, body, and calm in one considered ritual.',
@@ -14,7 +14,7 @@ const slides = [
     href: '#shop',
   },
   {
-    image: '/hero/carru2.png',
+    image: '/hero/ful_carru_sintex2.png',
     eyebrow: 'Wellness rituals',
     label: 'Made to linger',
     title: 'Slow down beautifully with essentials that feel like home.',
@@ -24,7 +24,7 @@ const slides = [
     href: '#rituals',
   },
   {
-    image: '/hero/carru3.png',
+    image: '/hero/ful_carru_sintex3.png',
     eyebrow: 'A softer philosophy',
     label: 'Less, but better',
     title: 'Minimal rituals for a more grounded life.',
@@ -34,7 +34,7 @@ const slides = [
     href: '#philosophy',
   },
   {
-    image: '/hero/carru4.png',
+    image: '/hero/ful_carru_sintex4.png',
     eyebrow: 'A softer philosophy',
     label: 'Less, but better',
     title: 'Minimal rituals for a more grounded life.',
@@ -44,7 +44,7 @@ const slides = [
     href: '#philosophy',
   },
   {
-    image: '/hero/carru5.png',
+    image: '/hero/ful_carru_sintex5.png',
     eyebrow: 'A softer philosophy',
     label: 'Less, but better',
     title: 'Minimal rituals for a more grounded life.',
@@ -54,7 +54,7 @@ const slides = [
     href: '#philosophy',
   },
   {
-    image: '/hero/carru6.png',
+    image: '/hero/ful_carru_sintex6.png',
     eyebrow: 'A softer philosophy',
     label: 'Less, but better',
     title: 'Minimal rituals for a more grounded life.',
