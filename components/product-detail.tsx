@@ -253,11 +253,78 @@ export function ProductDetail({ product }: { product: Product }) {
               : "Add to bag"}
         </button>
 
-        {/* 5. DETAILS */}
-        <div className="mt-10 border-t border-line pt-8">
-          <ProductDescription
-            description={product.descriptionHtml ?? product.description}
-          />
+        {/* 5. DETAILS / SHIPPING & RETURNS / FAQ */}
+        <div className="mt-10 divide-y divide-line border-t border-line">
+          <details open className="group py-6 first:pt-8">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-serif text-lg text-ink marker:content-none">
+              Details
+              <span
+                aria-hidden
+                className="shrink-0 text-xl text-terracotta transition-transform duration-200 group-open:rotate-45"
+              >
+                +
+              </span>
+            </summary>
+            <div className="mt-4">
+              <ProductDescription
+                description={product.descriptionHtml ?? product.description}
+              />
+            </div>
+          </details>
+
+          <details className="group py-6">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-serif text-lg text-ink marker:content-none">
+              Shipping &amp; returns
+              <span
+                aria-hidden
+                className="shrink-0 text-xl text-terracotta transition-transform duration-200 group-open:rotate-45"
+              >
+                +
+              </span>
+            </summary>
+            <div className="mt-4 space-y-3 text-sm leading-7 text-ink-soft">
+              <p>
+                Shipped from our U.S. warehouse. Orders ship within 2–3
+                business days and typically arrive within 3–7 business days
+                after that.
+              </p>
+              <p>
+                Free returns within 30 days of delivery.{" "}
+                <a href="/shipping" className="underline underline-offset-2 hover:text-ink">
+                  Shipping details
+                </a>{" "}
+                ·{" "}
+                <a href="/returns" className="underline underline-offset-2 hover:text-ink">
+                  Return policy
+                </a>
+              </p>
+            </div>
+          </details>
+
+          <details className="group py-6">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-serif text-lg text-ink marker:content-none">
+              Questions
+              <span
+                aria-hidden
+                className="shrink-0 text-xl text-terracotta transition-transform duration-200 group-open:rotate-45"
+              >
+                +
+              </span>
+            </summary>
+            <div className="mt-4 text-sm leading-7 text-ink-soft">
+              <p>
+                Need something specific before you buy? See our{" "}
+                <a href="/faq" className="underline underline-offset-2 hover:text-ink">
+                  full FAQ
+                </a>{" "}
+                or email{" "}
+                <a href="mailto:hello@getzemani.store" className="underline underline-offset-2 hover:text-ink">
+                  hello@getzemani.store
+                </a>
+                .
+              </p>
+            </div>
+          </details>
         </div>
       </div>
     </div>

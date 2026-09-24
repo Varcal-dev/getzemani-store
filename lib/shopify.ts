@@ -289,3 +289,31 @@ export async function removeCartLine(cartId: string, lineId: string) {
   if (data.cartLinesRemove.userErrors.length) throw new Error(data.cartLinesRemove.userErrors[0].message)
   return data.cartLinesRemove.cart
 }
+
+// ---------- Newsletter (Shopify customer marketing consent) ----------
+
+export async function subscribeToNewsletter(email: string) {
+  // If the email already belongs to a customer, customerCreate fails with
+  // "has already been taken" — we treat that as a soft success so people
+  // resubmitting don't see an error.
+  const query = `mutation CustomerCreate($input: CustomerCreateInput!) {
+    customerCreate(input: $input) {
+      customer { id }
+      customerUserErrors { code message }
+    }
+  }`
+  const data = await shopifyFetch<{
+    customerCreate: {
+      customer: { id: string } | null
+      customerUserErrors: { code: string; message: string }[]
+    }
+  }>(query, { input: { email, emailMarketingConsent: { marketingOptInLevel: "SINGLE_OPT_IN", marketingState: "SUBSCRIBED" } } }, "cart")
+
+  const errors = data.customerCreate.customerUserErrors
+  const alreadySubscribed = errors.some((e) => e.code === "TAKEN")
+  if (errors.length && !alreadySubscribed) {
+    throw new Error(errors[0].message)
+  }
+
+  return { alreadySubscribed }
+}

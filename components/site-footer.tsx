@@ -1,7 +1,9 @@
+import { NewsletterForm } from "@/components/newsletter-form";
+
 export function SiteFooter() {
   return (
     <footer className="border-t border-line bg-paper-deep">
-      <div className="mx-auto grid max-w-[1320px] gap-12 px-5 py-16 md:grid-cols-[1.4fr_2fr] lg:px-10 lg:py-20">
+      <div className="mx-auto grid max-w-[1320px] gap-12 px-5 py-16 md:grid-cols-[1.2fr_1.8fr_1.3fr] lg:px-10 lg:py-20">
         <div className="max-w-sm">
           <p className="font-serif text-4xl tracking-[-.03em] text-ink">
             Getzemani
@@ -35,13 +37,13 @@ export function SiteFooter() {
             <a href="mailto:hello@getzemani.store" className="hover:text-ink">
               Contact
             </a>
-            <a href="/#top" className="hover:text-ink">
+            <a href="/shipping" className="hover:text-ink">
               Shipping
             </a>
-            <a href="/#top" className="hover:text-ink">
+            <a href="/returns" className="hover:text-ink">
               Returns
             </a>
-            <a href="/#top" className="hover:text-ink">
+            <a href="/faq" className="hover:text-ink">
               FAQ
             </a>
           </div>
@@ -52,10 +54,16 @@ export function SiteFooter() {
             <a href="/#philosophy" className="hover:text-ink">
               Our story
             </a>
-            <a href="/#top" className="hover:text-ink">
-              Our approach
-            </a>
           </div>
+        </div>
+        <div className="max-w-sm">
+          <p className="mb-2 text-[10px] font-semibold uppercase tracking-[.18em] text-ink">
+            Stay in the loop
+          </p>
+          <p className="mb-4 text-sm leading-6 text-ink-soft">
+            Occasional notes on new rituals and restocks. No noise.
+          </p>
+          <NewsletterForm />
         </div>
       </div>
       <div className="mx-auto max-w-[1320px] border-t border-line px-5 py-5 text-xs text-ink-soft lg:px-10">
