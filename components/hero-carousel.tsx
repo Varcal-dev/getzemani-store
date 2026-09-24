@@ -5,63 +5,68 @@ import { useEffect, useState } from 'react';
 const slides = [
   {
     image: '/hero/ful_carru_sintex1.png',
-    eyebrow: 'The Getzemani Edit',
-    label: 'Daily rituals, refined',
-    title: 'Beauty, body, and calm in one considered ritual.',
+    eyebrow: 'GETZEMANI',
+    label: 'Beauty · Wellness · Home',
+    title: 'Care, at the pace of a garden.',
     description:
-      'Curated essentials for skin, self-care, and slower living — elevated to fit naturally into real life.',
-    cta: 'Shop the collection',
+      'Thoughtfully chosen essentials for beauty, everyday wellness, and a calmer way of living.',
+    cta: 'Shop now',
     href: '#shop',
   },
+
   {
     image: '/hero/ful_carru_sintex2.png',
-    eyebrow: 'Wellness rituals',
-    label: 'Made to linger',
-    title: 'Slow down beautifully with essentials that feel like home.',
+    eyebrow: 'SKIN',
+    label: 'Simple care, everyday',
+    title: 'Make space for your skin.',
     description:
-      'Thoughtful body care and everyday objects designed to reset your rhythm, soften your space, and bring intention back in.',
-    cta: 'Explore rituals',
-    href: '#rituals',
+      'Discover gentle beauty essentials designed to make your everyday routine feel a little more intentional.',
+    cta: 'Shop skin',
+    href: '#skin',
   },
+
   {
     image: '/hero/ful_carru_sintex3.png',
-    eyebrow: 'A softer philosophy',
-    label: 'Less, but better',
-    title: 'Minimal rituals for a more grounded life.',
+    eyebrow: 'BODY',
+    label: 'Everyday self-care',
+    title: 'Feel better in your body.',
     description:
-      'Created for people who want less noise, more presence, and beauty that supports the way they actually live.',
-    cta: 'Discover the philosophy',
-    href: '#philosophy',
+      'Practical essentials for personal care, comfort, and the small rituals that help you slow down.',
+    cta: 'Shop body',
+    href: '#body',
   },
+
   {
     image: '/hero/ful_carru_sintex4.png',
-    eyebrow: 'A softer philosophy',
-    label: 'Less, but better',
-    title: 'Minimal rituals for a more grounded life.',
+    eyebrow: 'HOME',
+    label: 'Create your calm',
+    title: 'A calmer home, a softer rhythm.',
     description:
-      'Created for people who want less noise, more presence, and beauty that supports the way they actually live.',
-    cta: 'Discover the philosophy',
-    href: '#philosophy',
+      'Bring comfort and intention into your space with simple essentials made for everyday living.',
+    cta: 'Shop home',
+    href: '#home',
   },
+
   {
     image: '/hero/ful_carru_sintex5.png',
-    eyebrow: 'A softer philosophy',
-    label: 'Less, but better',
-    title: 'Minimal rituals for a more grounded life.',
+    eyebrow: 'WELLNESS',
+    label: 'Small rituals matter',
+    title: 'Feel better. Do less.',
     description:
-      'Created for people who want less noise, more presence, and beauty that supports the way they actually live.',
-    cta: 'Discover the philosophy',
-    href: '#philosophy',
+      'Explore thoughtful essentials that fit naturally into your routine — without adding more noise.',
+    cta: 'Explore wellness',
+    href: '#wellness',
   },
+
   {
     image: '/hero/ful_carru_sintex6.png',
-    eyebrow: 'A softer philosophy',
-    label: 'Less, but better',
-    title: 'Minimal rituals for a more grounded life.',
+    eyebrow: 'THE GETZEMANI EDIT',
+    label: 'Less, but considered',
+    title: 'Everyday essentials, thoughtfully chosen.',
     description:
-      'Created for people who want less noise, more presence, and beauty that supports the way they actually live.',
-    cta: 'Discover the philosophy',
-    href: '#philosophy',
+      'Beauty, body, and home pieces selected to help you create a routine that feels more like your own.',
+    cta: 'Explore the collection',
+    href: '#shop',
   },
 ];
 
