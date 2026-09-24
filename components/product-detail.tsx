@@ -318,8 +318,8 @@ export function ProductDetail({ product }: { product: Product }) {
                   full FAQ
                 </a>{" "}
                 or email{" "}
-                <a href="mailto:hello@getzemani.store" className="underline underline-offset-2 hover:text-ink">
-                  hello@getzemani.store
+                <a href="mailto:getzemani.store.info@gmail.com" className="underline underline-offset-2 hover:text-ink">
+                  getzemani.store.info@gmail.com
                 </a>
                 .
               </p>

@@ -31,7 +31,7 @@ const FAQS: { question: string; answer: string }[] = [
   {
     question: "How do I start a return?",
     answer:
-      "Email hello@getzemani.store with your order number and reason for the return, and we'll send you a prepaid return label and next steps.",
+      "Email getzemani.store.info@gmail.com with your order number and reason for the return, and we'll send you a prepaid return label and next steps.",
   },
   {
     question: "What payment methods do you accept?",
@@ -41,7 +41,7 @@ const FAQS: { question: string; answer: string }[] = [
   {
     question: "Can I change or cancel my order?",
     answer:
-      "If your order hasn't shipped yet, email us right away at hello@getzemani.store and we'll do our best to change or cancel it. Once it ships, it falls under our standard return policy.",
+      "If your order hasn't shipped yet, email us right away at getzemani.store.info@gmail.com and we'll do our best to change or cancel it. Once it ships, it falls under our standard return policy.",
   },
   {
     question: "How do I track my order?",
@@ -58,7 +58,7 @@ export default async function FaqPage() {
       collections={collections}
       eyebrow="Getzemani"
       title="Frequently asked questions"
-      intro="Quick answers about orders, shipping, and returns. Don't see what you need? Reach us at hello@getzemani.store."
+      intro="Quick answers about orders, shipping, and returns. Don't see what you need? Reach us at getzemani.store.info@gmail.commil.com"
     >
       <div className="divide-y divide-line border-t border-line">
         {FAQS.map((item) => (

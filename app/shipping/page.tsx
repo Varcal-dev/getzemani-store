@@ -54,7 +54,7 @@ export default async function ShippingPage() {
           Once your order ships, you&apos;ll receive an email with a tracking
           link. If a few days go by and your tracking hasn&apos;t updated,
           reach out to us at{" "}
-          <a href="mailto:hello@getzemani.store" className="underline underline-offset-2 hover:text-ink">
+          <a href="mailto:getzemani.store.info@gmail.com" className="underline underline-offset-2 hover:text-ink">
             getzemani.store.info@gmail.com
           </a>{" "}
           and we&apos;ll look into it.

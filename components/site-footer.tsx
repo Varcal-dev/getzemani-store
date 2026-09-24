@@ -34,7 +34,7 @@ export function SiteFooter() {
             <p className="mb-2 text-[10px] font-semibold uppercase tracking-[.18em] text-ink">
               Help
             </p>
-            <a href="mailto:hello@getzemani.store" className="hover:text-ink">
+            <a href="mailto:getzemani.store.info@gmail.com" className="hover:text-ink">
               Contact
             </a>
             <a href="/shipping" className="hover:text-ink">
