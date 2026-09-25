@@ -197,9 +197,49 @@ export default async function Home({
           </div>
         </Reveal>
       )}
+      {/* Why Getzemani -- three pillars answering "why this brand" */}
+      <Reveal
+        as="section"
+        aria-label="Why Getzemani"
+        className="mx-auto max-w-[1320px] px-5 py-16 lg:px-10 lg:py-24"
+      >
+        <div className="mb-12 max-w-xl">
+          <p className="mb-4 text-[11px] font-semibold uppercase tracking-[.22em] text-terracotta">
+            Why Getzemani
+          </p>
+          <h2 className="font-serif text-4xl leading-[1.02] tracking-[-.03em] text-ink lg:text-5xl">
+            We believe feeling better doesn&apos;t have to mean doing more.
+          </h2>
+        </div>
+        <div className="grid gap-x-6 gap-y-10 sm:grid-cols-3">
+          {[
+            [
+              "Thoughtfully chosen",
+              "We focus on products that have a natural place in everyday routines.",
+            ],
+            [
+              "Simple by design",
+              "No complicated rituals. Just useful things that feel good to use.",
+            ],
+            [
+              "Everyday wellness",
+              "Small moments of care can make ordinary days feel a little better.",
+            ],
+          ].map(([title, text]) => (
+            <div key={title}>
+              <h3 className="font-serif text-2xl text-ink">{title}</h3>
+              <p className="mt-3 text-sm leading-7 text-ink-soft">{text}</p>
+            </div>
+          ))}
+        </div>
+      </Reveal>
 
       {/* Editorial visual moment -- a pure breathing pause between rituals and the brand */}
-      <Reveal as="section" id="philosophy" className="relative flex h-[70vh] min-h-[440px] items-center overflow-hidden">
+      <Reveal
+        as="section"
+        id="philosophy"
+        className="relative flex h-[70vh] min-h-[440px] items-center overflow-hidden"
+      >
         <img
           src="https://images.unsplash.com/photo-1585652757173-57de5e9fab42?auto=format&fit=crop&w=1800&q=85"
           alt="A quiet corner set up for an evening ritual"
@@ -214,8 +254,8 @@ export default async function Home({
             <em>Do less.</em>
           </h2>
           <p className="mt-6 max-w-md text-base leading-7 text-paper/85">
-            Most wellness brands sell you more to do. We&apos;d rather give
-            you less to think about.
+            Most wellness brands sell you more to do. We&apos;d rather give you
+            less to think about.
           </p>
         </div>
       </Reveal>

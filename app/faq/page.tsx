@@ -36,7 +36,7 @@ const FAQS: { question: string; answer: string }[] = [
   {
     question: "What payment methods do you accept?",
     answer:
-      "We accept all major credit and debit cards through Shopify Payments, plus Shop Pay, Apple Pay, Google Pay, and PayPal.",
+      "We accept all major credit and debit cards through Shopify Payments.",
   },
   {
     question: "Can I change or cancel my order?",
@@ -58,7 +58,7 @@ export default async function FaqPage() {
       collections={collections}
       eyebrow="Getzemani"
       title="Frequently asked questions"
-      intro="Quick answers about orders, shipping, and returns. Don't see what you need? Reach us at getzemani.store.info@gmail.commil.com"
+      intro="Quick answers about orders, shipping, and returns. Don't see what you need? Reach us at getzemani.store.info@gmail.com"
     >
       <div className="divide-y divide-line border-t border-line">
         {FAQS.map((item) => (
