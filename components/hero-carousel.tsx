@@ -11,7 +11,7 @@ const slides = [
     description:
       'Thoughtfully chosen essentials for beauty, everyday wellness, and a calmer way of living.',
     cta: 'Shop now',
-    href: '#shop',
+    href: '/products',
   },
 
   {
@@ -22,7 +22,7 @@ const slides = [
     description:
       'Discover gentle beauty essentials designed to make your everyday routine feel a little more intentional.',
     cta: 'Shop skin',
-    href: '#skin',
+    href: '/products?category=skin',
   },
 
   {
@@ -33,7 +33,7 @@ const slides = [
     description:
       'Practical essentials for personal care, comfort, and the small rituals that help you slow down.',
     cta: 'Shop body',
-    href: '#body',
+    href: '/products?category=body',
   },
 
   {
@@ -44,7 +44,7 @@ const slides = [
     description:
       'Bring comfort and intention into your space with simple essentials made for everyday living.',
     cta: 'Shop home',
-    href: '#home',
+    href: '/products?category=home',
   },
 
   {
@@ -55,7 +55,7 @@ const slides = [
     description:
       'Explore thoughtful essentials that fit naturally into your routine — without adding more noise.',
     cta: 'Explore wellness',
-    href: '#wellness',
+    href: '#philosophy',
   },
 
   {
@@ -66,7 +66,7 @@ const slides = [
     description:
       'Beauty, body, and home pieces selected to help you create a routine that feels more like your own.',
     cta: 'Explore the collection',
-    href: '#shop',
+    href: '/products',
   },
 ];
 

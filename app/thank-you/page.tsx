@@ -1,6 +1,12 @@
+import type { Metadata } from "next"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { getCollections } from "@/lib/shopify"
+
+export const metadata: Metadata = {
+  title: "Thank you | Getzemani",
+  robots: { index: false, follow: false },
+}
 
 export default async function ThankYouPage({
   searchParams,
@@ -51,7 +57,7 @@ export default async function ThankYouPage({
         ) : null}
 
         <a
-          href="/#shop"
+          href="/products"
           className="mt-10 inline-block rounded-full bg-olive-deep px-7 py-3.5 text-sm text-paper transition-colors hover:bg-olive"
         >
           Continue exploring

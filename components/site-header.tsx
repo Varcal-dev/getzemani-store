@@ -76,7 +76,7 @@ export function SiteHeader({
                 {navCollections.map((collection) => (
                   <a
                     key={collection?.id}
-                    href={`/?category=${collection?.handle}#shop`}
+                    href={`/products?category=${collection?.handle}`}
                     className="py-1 text-xs font-semibold uppercase tracking-[.1em] text-ink-soft hover:text-ink"
                   >
                     {collection && collectionLabel(collection)}
@@ -130,7 +130,7 @@ export function SiteHeader({
                 {navCollections.map((collection) => (
                   <a
                     key={collection?.id}
-                    href={`/?category=${collection?.handle}#shop`}
+                    href={`/products?category=${collection?.handle}`}
                     onClick={() => setOpen(false)}
                   >
                     {collection && collectionLabel(collection)}

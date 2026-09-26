@@ -17,16 +17,16 @@ export function SiteFooter() {
             <p className="mb-2 text-[10px] font-semibold uppercase tracking-[.18em] text-ink">
               Shop
             </p>
-            <a href="/#shop" className="hover:text-ink">
+            <a href="/products?category=skin" className="hover:text-ink">
               Skin
             </a>
-            <a href="/#shop" className="hover:text-ink">
+            <a href="/products?category=body" className="hover:text-ink">
               Body
             </a>
             <a href="/#rituals" className="hover:text-ink">
               Wellness
             </a>
-            <a href="/#shop" className="hover:text-ink">
+            <a href="/products?category=home" className="hover:text-ink">
               Home
             </a>
           </div>

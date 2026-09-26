@@ -1,14 +1,9 @@
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { ProductCard } from "@/components/product-card";
 import { FeaturedProductCard } from "@/components/featured-product-card";
 import { Reveal } from "@/components/reveal";
 import { HeroCarousel } from "@/components/hero-carousel";
-import {
-  getCollectionProducts,
-  getProduct,
-  getStorefront,
-} from "@/lib/shopify";
+import { getCollectionProducts, getProduct, getStorefront } from "@/lib/shopify";
 
 declare global {
   namespace JSX {
@@ -22,51 +17,56 @@ declare global {
   }
 }
 
-// "The Getzemani Way" -- doubles as the trust strip, so the promise isn't repeated twice
-const WAY = [
-  ["Curated", "We don't believe in more. We believe in better choices."],
-  ["Simple", "Products designed to fit naturally into everyday life."],
-  ["Thoughtful", "Beauty and wellness without unnecessary complexity."],
-  ["Human", "Real support from real people."],
+// Why Getzemani -- single, minimal trust section (replaces the old
+// "Getzemani Way" strip + the separate "Why Getzemani" block, which said
+// the same thing twice)
+const WHY = [
+  "Thoughtfully chosen.",
+  "Simple to use.",
+  "Made for everyday life.",
 ];
 
-const RITUAL_HANDLES = ["skin", "body", "movement", "home"];
+const RITUAL_HANDLES = ["skin", "body", "evening", "home"];
 
 const RITUAL_TAGLINE: Record<string, string> = {
   skin: "Glow & care",
   body: "Everyday self-care",
-  movement: "Slow down & feel better",
+  evening: "Slow down & unwind",
   home: "Create your space",
 };
 
-// The four products the Edit opens with -- confirmed live on the store
-const EDIT_HANDLES = [
+// "The Getzemani Edit" -- to change which products show here, go to
+// Shopify Admin > Products > Collections and add/remove products from the
+// collection with this handle. No code changes or redeploy needed.
+const EDIT_COLLECTION_HANDLE = "the-getzemani-edit";
+const EDIT_MAX = 4;
+
+// Used only if the collection above doesn't exist yet (or is empty) --
+// safe to delete once the collection is set up in Shopify Admin.
+const EDIT_FALLBACK_HANDLES = [
   "led-facial-beauty-mask-for-at-home-skincareled-facial-beauty-mask",
   "natural-resin-gua-sha-facial-massage-tool",
   "facial-cleansing-brush-3in1-rechargeable",
   "salt-rock-aromatherapy-diffuser",
 ];
 
-export default async function Home({
-  searchParams,
-}: {
-  searchParams: Promise<{ category?: string }>;
-}) {
-  const { category } = await searchParams;
-  const [data, selectedCollection, editProducts] = await Promise.all([
+export default async function Home() {
+  const [data, editCollection] = await Promise.all([
     getStorefront(),
-    category ? getCollectionProducts(category) : Promise.resolve(null),
-    Promise.all(EDIT_HANDLES.map((handle) => getProduct(handle))),
+    getCollectionProducts(EDIT_COLLECTION_HANDLE),
   ]);
 
-  const products = selectedCollection?.products.nodes ?? data.products.nodes;
+  const editProducts = editCollection?.products.nodes.length
+    ? editCollection.products.nodes
+    : await Promise.all(EDIT_FALLBACK_HANDLES.map((handle) => getProduct(handle)));
+
   const collections = data.collections.nodes;
   const ritualCollections = RITUAL_HANDLES.map((handle) =>
     collections.find((collection) => collection.handle === handle),
   )
     .filter(Boolean)
     .slice(0, 4);
-  const featured = editProducts.filter(Boolean);
+  const featured = editProducts.filter(Boolean).slice(0, EDIT_MAX);
 
   return (
     <main id="top" className="min-h-screen bg-paper">
@@ -75,19 +75,23 @@ export default async function Home({
       {/* Hero -- full-bleed editorial campaign carousel */}
       <HeroCarousel />
 
-      {/* The Getzemani Way -- brand promise, doubling as the trust strip */}
+      {/* Why Getzemani -- single minimal trust line, answers "why buy here" */}
       <Reveal
         as="section"
-        aria-label="The Getzemani way"
+        aria-label="Why Getzemani"
         className="border-y border-line bg-card px-5 py-12 lg:px-10 lg:py-14"
       >
-        <div className="mx-auto grid max-w-[1320px] grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-4 lg:gap-10">
-          {WAY.map(([title, text]) => (
-            <div key={title} className="max-w-xs">
-              <p className="font-serif text-lg text-terracotta">{title}</p>
-              <p className="mt-2 text-sm leading-6 text-ink-soft">{text}</p>
-            </div>
-          ))}
+        <div className="mx-auto max-w-[1320px]">
+          <p className="mb-6 text-[11px] font-semibold uppercase tracking-[.22em] text-terracotta">
+            Why Getzemani
+          </p>
+          <div className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-3">
+            {WHY.map((line) => (
+              <p key={line} className="font-serif text-xl text-ink lg:text-2xl">
+                {line}
+              </p>
+            ))}
+          </div>
         </div>
       </Reveal>
 
@@ -105,7 +109,7 @@ export default async function Home({
               Your everyday ritual.
             </h2>
             <p className="mt-5 text-base leading-7 text-ink-soft">
-              Four simple essentials worth making space for.
+              A few simple essentials worth making space for.
             </p>
           </div>
           <div className="grid grid-cols-2 gap-x-4 gap-y-12 lg:grid-cols-4 lg:gap-x-6">
@@ -113,28 +117,16 @@ export default async function Home({
               <FeaturedProductCard key={product!.id} product={product!} />
             ))}
           </div>
+          <div className="mt-12 text-center">
+            <a
+              href="/products"
+              className="underline-grow text-sm font-semibold uppercase tracking-[.12em] text-terracotta"
+            >
+              Explore all products →
+            </a>
+          </div>
         </Reveal>
       )}
-
-      <section
-        id="shop"
-        className="mx-auto max-w-[1320px] px-5 pb-16 lg:px-10 lg:pb-24"
-      >
-        <div className="mb-10 max-w-xl">
-          <h2 className="font-serif text-4xl leading-none tracking-[-.03em] text-ink lg:text-5xl">
-            {selectedCollection ? selectedCollection.title : "Shop everything"}
-          </h2>
-        </div>
-        <div className="grid grid-cols-2 gap-x-4 gap-y-12 md:grid-cols-3 md:gap-x-6 lg:gap-y-16">
-          {products.length ? (
-            products.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))
-          ) : (
-            <p className="col-span-full text-ink-soft">No products found.</p>
-          )}
-        </div>
-      </section>
 
       {ritualCollections.length > 0 && (
         <Reveal
@@ -160,7 +152,7 @@ export default async function Home({
                   collection && (
                     <a
                       key={collection.id}
-                      href={`/?category=${collection.handle}#shop`}
+                      href={`/products?category=${collection.handle}`}
                       className="group block"
                     >
                       <div className="aspect-[4/3] overflow-hidden bg-card">
@@ -178,9 +170,7 @@ export default async function Home({
                       <div className="flex items-start justify-between gap-3 pt-5">
                         <div>
                           <h3 className="font-serif text-3xl text-ink">
-                            {collection.handle === "movement"
-                              ? "Wellness"
-                              : collection.title}
+                            {collection.title} Ritual
                           </h3>
                           <p className="mt-2 text-sm leading-6 text-ink-soft">
                             {RITUAL_TAGLINE[collection.handle] ?? ""}
@@ -197,42 +187,6 @@ export default async function Home({
           </div>
         </Reveal>
       )}
-      {/* Why Getzemani -- three pillars answering "why this brand" */}
-      <Reveal
-        as="section"
-        aria-label="Why Getzemani"
-        className="mx-auto max-w-[1320px] px-5 py-16 lg:px-10 lg:py-24"
-      >
-        <div className="mb-12 max-w-xl">
-          <p className="mb-4 text-[11px] font-semibold uppercase tracking-[.22em] text-terracotta">
-            Why Getzemani
-          </p>
-          <h2 className="font-serif text-4xl leading-[1.02] tracking-[-.03em] text-ink lg:text-5xl">
-            We believe feeling better doesn&apos;t have to mean doing more.
-          </h2>
-        </div>
-        <div className="grid gap-x-6 gap-y-10 sm:grid-cols-3">
-          {[
-            [
-              "Thoughtfully chosen",
-              "We focus on products that have a natural place in everyday routines.",
-            ],
-            [
-              "Simple by design",
-              "No complicated rituals. Just useful things that feel good to use.",
-            ],
-            [
-              "Everyday wellness",
-              "Small moments of care can make ordinary days feel a little better.",
-            ],
-          ].map(([title, text]) => (
-            <div key={title}>
-              <h3 className="font-serif text-2xl text-ink">{title}</h3>
-              <p className="mt-3 text-sm leading-7 text-ink-soft">{text}</p>
-            </div>
-          ))}
-        </div>
-      </Reveal>
 
       {/* Editorial visual moment -- a pure breathing pause between rituals and the brand */}
       <Reveal
@@ -273,7 +227,7 @@ export default async function Home({
             Discover simple essentials for skin, body and everyday wellness.
           </p>
           <a
-            href="#shop"
+            href="/products"
             className="mt-8 inline-block bg-terracotta px-8 py-4 text-xs font-semibold uppercase tracking-[.12em] text-paper transition-colors hover:bg-terracotta-deep"
           >
             Shop Getzemani

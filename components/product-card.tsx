@@ -12,7 +12,13 @@ function formatPrice(product: Product) {
   }).format(Number(amount));
 }
 
-export function ProductCard({ product }: { product: Product }) {
+export function ProductCard({
+  product,
+  tagline,
+}: {
+  product: Product;
+  tagline?: string;
+}) {
   const { addItem, isLoading } = useCart();
   const firstVariant =
     product.variants.nodes.find((v) => v.availableForSale) ??
@@ -56,6 +62,9 @@ export function ProductCard({ product }: { product: Product }) {
             {product.title}
           </h3>
         </a>
+        {tagline && (
+          <p className="mt-1 text-xs italic text-ink-soft/80">{tagline}</p>
+        )}
         <p className="mt-1.5 text-sm text-ink-soft">{formatPrice(product)}</p>
       </div>
     </article>
