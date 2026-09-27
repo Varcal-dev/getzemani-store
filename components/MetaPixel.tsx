@@ -75,15 +75,51 @@ export default function MetaPixel() {
 }
 
 /**
- * Helper para disparar eventos estándar desde cualquier componente cliente.
- * Uso: trackMetaEvent("ViewContent", { content_ids: [handle], content_type: "product", value, currency: "USD" })
+ * Dispara un evento tanto en el Pixel del navegador como en la Conversions API
+ * (server-side), usando el mismo event_id para que Meta los deduplique.
+ *
+ * Uso:
+ *   trackMetaEvent("ViewContent", { content_ids: [handle], content_type: "product", value, currency: "USD" })
  */
 export function trackMetaEvent(
   eventName: string,
-  params?: Record<string, unknown>,
-  eventId?: string
+  customData?: Record<string, unknown>
 ) {
+  const eventId =
+    typeof crypto !== "undefined" && "randomUUID" in crypto
+      ? crypto.randomUUID()
+      : `${eventName}-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+
+  // 1. Pixel del navegador
   if (typeof window !== "undefined" && typeof window.fbq === "function") {
-    window.fbq("track", eventName, params, eventId ? { eventID: eventId } : undefined);
+    window.fbq("track", eventName, customData, { eventID: eventId });
   }
+
+  // 2. Conversions API (server-side), con el mismo event_id
+  if (typeof window !== "undefined") {
+    const fbp = getCookie("_fbp");
+    const fbc = getCookie("_fbc");
+
+    fetch("/api/meta-events", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        eventName,
+        eventId,
+        eventSourceUrl: window.location.href,
+        customData,
+        userData: { fbp, fbc },
+      }),
+      // no bloquea la navegación si falla
+      keepalive: true,
+    }).catch(() => {
+      /* falla silenciosa: no debe romper la experiencia del usuario */
+    });
+  }
+}
+
+function getCookie(name: string): string | undefined {
+  if (typeof document === "undefined") return undefined;
+  const match = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`));
+  return match ? decodeURIComponent(match[1]) : undefined;
 }
