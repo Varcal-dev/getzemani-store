@@ -2,7 +2,7 @@
 
 import Script from "next/script";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 
 declare global {
   interface Window {
@@ -67,7 +67,9 @@ export default function MetaPixel() {
           alt=""
         />
       </noscript>
-      <PixelPageViewTracker />
+      <Suspense fallback={null}>
+        <PixelPageViewTracker />
+      </Suspense>
     </>
   );
 }
