@@ -1,9 +1,10 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import type { Product } from "@/lib/shopify";
 import { useCart } from "@/context/cart-context";
 import { cleanAlt } from "@/lib/format";
+import { trackMetaEvent } from "@/components/MetaPixel";
 
 function formatMoney(amount: string, currencyCode: string) {
   return new Intl.NumberFormat("en-US", {
@@ -144,10 +145,31 @@ export function ProductDetail({ product }: { product: Product }) {
   );
   const [justAdded, setJustAdded] = useState(false);
 
+  // ViewContent: se dispara una vez cuando el usuario entra a la página de producto.
+  useEffect(() => {
+    trackMetaEvent("ViewContent", {
+      content_ids: [product.id],
+      content_type: "product",
+      content_name: product.title,
+      value: Number(variant?.price.amount ?? 0),
+      currency: variant?.price.currencyCode ?? "USD",
+    });
+    // Solo al montar / cuando cambia el producto — no en cada cambio de variante.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [product.id]);
+
   async function handleAdd() {
     if (!variant) return;
 
     await addItem(variant.id, 1);
+
+    trackMetaEvent("AddToCart", {
+      content_ids: [variant.id],
+      content_type: "product",
+      content_name: product.title,
+      value: Number(variant.price.amount),
+      currency: variant.price.currencyCode,
+    });
 
     setJustAdded(true);
 
