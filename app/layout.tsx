@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next"
 import "./globals.css"
 import { CartProvider } from "@/context/cart-context"
 import { CartDrawer } from "@/components/cart-drawer"
+import MetaPixel from "@/components/MetaPixel"
 
 export const metadata: Metadata = {
   title: "Getzemani — Everyday rituals for feeling well",
@@ -17,6 +18,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" className="bg-paper">
       <body>
+        <MetaPixel />
         <CartProvider>
           {children}
           <CartDrawer />
