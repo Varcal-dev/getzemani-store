@@ -1,6 +1,10 @@
 "use client";
 import { useCart } from "@/context/cart-context";
 import { cleanAlt } from "@/lib/format";
+import { trackBeginCheckout } from "@/lib/analytics";
+
+import { trackMetaEvent } from "@/components/MetaPixel";
+
 function formatMoney(amount: string, currencyCode: string) {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -123,6 +127,29 @@ export function CartDrawer() {
             </p>
             <a
               href={cart.checkoutUrl}
+              onClick={() => {
+                const items = lines.map((line) => ({
+                  item_id: line.merchandise.id,
+                  item_name: line.merchandise.product.title,
+                  price: Number(line.merchandise.price.amount),
+                  quantity: line.quantity,
+                }));
+
+                const value = Number(cart.cost.subtotalAmount.amount);
+                const currency = cart.cost.subtotalAmount.currencyCode;
+
+                // GA4
+                trackBeginCheckout(items, value, currency);
+
+                // Meta
+                trackMetaEvent("InitiateCheckout", {
+                  content_ids: items.map((item) => item.item_id),
+                  content_type: "product",
+                  num_items: cart.totalQuantity,
+                  value,
+                  currency,
+                });
+              }}
               className="block w-full bg-terracotta py-4 text-center text-sm font-semibold text-paper transition-colors hover:bg-terracotta-deep"
             >
               Checkout

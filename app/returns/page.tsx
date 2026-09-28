@@ -58,8 +58,8 @@ export default async function ReturnsPage() {
       <PolicySection title="How to start a return">
         <p>
           Email us at{" "}
-          <a href="mailto:getzemani.store.info@gmail.com" className="underline underline-offset-2 hover:text-ink">
-            getzemani.store.info@gmail.com
+          <a href="mailto:info@getzemani.store" className="underline underline-offset-2 hover:text-ink">
+            info@getzemani.store
           </a>{" "}
           with your order number and the reason for the return. We&apos;ll
           confirm eligibility and send you a prepaid return label and the

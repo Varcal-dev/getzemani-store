@@ -5,6 +5,7 @@ import type { Product } from "@/lib/shopify";
 import { useCart } from "@/context/cart-context";
 import { cleanAlt } from "@/lib/format";
 import { trackMetaEvent } from "@/components/MetaPixel";
+import { trackAddToCart, trackViewItem } from "@/lib/analytics";
 
 function formatMoney(amount: string, currencyCode: string) {
   return new Intl.NumberFormat("en-US", {
@@ -147,14 +148,30 @@ export function ProductDetail({ product }: { product: Product }) {
 
   // ViewContent: se dispara una vez cuando el usuario entra a la página de producto.
   useEffect(() => {
+    const price = Number(variant?.price.amount ?? 0);
+    const currency = variant?.price.currencyCode ?? "USD";
+
+    // Meta
     trackMetaEvent("ViewContent", {
       content_ids: [product.id],
       content_type: "product",
       content_name: product.title,
-      value: Number(variant?.price.amount ?? 0),
-      currency: variant?.price.currencyCode ?? "USD",
+      value: price,
+      currency,
     });
-    // Solo al montar / cuando cambia el producto — no en cada cambio de variante.
+
+    // GA4
+    trackViewItem(
+      {
+        item_id: variant?.id ?? product.id,
+        item_name: product.title,
+        price,
+        quantity: 1,
+      },
+      currency,
+    );
+
+    // Solo una vez por producto
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [product.id]);
 
@@ -163,13 +180,28 @@ export function ProductDetail({ product }: { product: Product }) {
 
     await addItem(variant.id, 1);
 
+    const price = Number(variant.price.amount);
+    const currency = variant.price.currencyCode;
+
+    // Meta
     trackMetaEvent("AddToCart", {
       content_ids: [variant.id],
       content_type: "product",
       content_name: product.title,
-      value: Number(variant.price.amount),
-      currency: variant.price.currencyCode,
+      value: price,
+      currency,
     });
+
+    // GA4
+    trackAddToCart(
+      {
+        item_id: variant.id,
+        item_name: product.title,
+        price,
+        quantity: 1,
+      },
+      currency,
+    );
 
     setJustAdded(true);
 
@@ -207,7 +239,11 @@ export function ProductDetail({ product }: { product: Product }) {
                 }`}
                 aria-label={`View image ${i + 1}`}
               >
-                <img src={img.url} alt="" className="h-full w-full object-contain" />
+                <img
+                  src={img.url}
+                  alt=""
+                  className="h-full w-full object-contain"
+                />
               </button>
             ))}
           </div>
@@ -306,17 +342,22 @@ export function ProductDetail({ product }: { product: Product }) {
             </summary>
             <div className="mt-4 space-y-3 text-sm leading-7 text-ink-soft">
               <p>
-                Shipped from our U.S. warehouse. Orders ship within 2–3
-                business days and typically arrive within 3–7 business days
-                after that.
+                Shipped from our U.S. warehouse. Orders ship within 2–3 business
+                days and typically arrive within 3–7 business days after that.
               </p>
               <p>
                 Free returns within 30 days of delivery.{" "}
-                <a href="/shipping" className="underline underline-offset-2 hover:text-ink">
+                <a
+                  href="/shipping"
+                  className="underline underline-offset-2 hover:text-ink"
+                >
                   Shipping details
                 </a>{" "}
                 ·{" "}
-                <a href="/returns" className="underline underline-offset-2 hover:text-ink">
+                <a
+                  href="/returns"
+                  className="underline underline-offset-2 hover:text-ink"
+                >
                   Return policy
                 </a>
               </p>
@@ -336,12 +377,18 @@ export function ProductDetail({ product }: { product: Product }) {
             <div className="mt-4 text-sm leading-7 text-ink-soft">
               <p>
                 Need something specific before you buy? See our{" "}
-                <a href="/faq" className="underline underline-offset-2 hover:text-ink">
+                <a
+                  href="/faq"
+                  className="underline underline-offset-2 hover:text-ink"
+                >
                   full FAQ
                 </a>{" "}
                 or email{" "}
-                <a href="mailto:getzemani.store.info@gmail.com" className="underline underline-offset-2 hover:text-ink">
-                  getzemani.store.info@gmail.com
+                <a
+                  href="mailto:info@getzemani.store"
+                  className="underline underline-offset-2 hover:text-ink"
+                >
+                  info@getzemani.store
                 </a>
                 .
               </p>

@@ -1,29 +1,35 @@
-import type { Metadata, Viewport } from "next"
-import "./globals.css"
-import { CartProvider } from "@/context/cart-context"
-import { CartDrawer } from "@/components/cart-drawer"
-import MetaPixel from "@/components/MetaPixel"
+import type { Metadata, Viewport } from "next";
+import "./globals.css";
+import { CartProvider } from "@/context/cart-context";
+import { CartDrawer } from "@/components/cart-drawer";
+import MetaPixel from "@/components/MetaPixel";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 
 export const metadata: Metadata = {
   title: "Getzemani — Everyday rituals for feeling well",
-  description: "Carefully selected skincare, body care, and everyday wellness essentials for a quieter kind of self-care.",
+  description:
+    "Carefully selected skincare, body care, and everyday wellness essentials for a quieter kind of self-care.",
   manifest: "/manifest.webmanifest",
-}
+};
 
 export const viewport: Viewport = {
   themeColor: "#36483d",
-}
+};
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className="bg-paper">
       <body>
         <MetaPixel />
+        <GoogleAnalytics />
+
         <CartProvider>
           {children}
           <CartDrawer />
         </CartProvider>
       </body>
     </html>
-  )
+  );
 }
