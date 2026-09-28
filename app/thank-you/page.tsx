@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
+import { PurchaseTracker } from "@/components/PurchaseTracker"
 import { getCollections } from "@/lib/shopify"
 
 export const metadata: Metadata = {
@@ -11,13 +12,28 @@ export const metadata: Metadata = {
 export default async function ThankYouPage({
   searchParams,
 }: {
-  searchParams: Promise<{ order?: string; email?: string }>
+  searchParams: Promise<{ order?: string; email?: string; value?: string; currency?: string }>
 }) {
-  const { order, email } = await searchParams
+  const { order, email, value, currency } = await searchParams
   const collections = await getCollections().catch(() => [])
+
+  // El valor real de la orden llega como parámetro `value` en la URL de
+  // redirect (ver Additional Scripts en Shopify Admin, documentado en el
+  // README). Si por algún motivo no llega, se reporta 0 en vez de romper
+  // el tracking — pero el caso normal ahora sí manda el monto real.
+  const numericValue = value ? Number(value) : 0
+  const safeValue = Number.isFinite(numericValue) ? numericValue : 0
 
   return (
     <main id="top" className="min-h-screen bg-paper">
+      {order ? (
+        <PurchaseTracker
+          order={order}
+          value={safeValue}
+          currency={currency || "USD"}
+        />
+      ) : null}
+
       <SiteHeader collections={collections} />
 
       <section className="mx-auto flex max-w-2xl flex-col items-center px-5 py-24 text-center lg:py-32">

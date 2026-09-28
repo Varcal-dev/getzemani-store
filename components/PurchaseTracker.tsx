@@ -6,8 +6,12 @@ import { trackMetaEvent } from "@/components/MetaPixel"
 
 export function PurchaseTracker({
   order,
+  value,
+  currency = "USD",
 }: {
   order: string
+  value: number
+  currency?: string
 }) {
   const tracked = useRef(false)
 
@@ -23,23 +27,20 @@ export function PurchaseTracker({
     tracked.current = true
     sessionStorage.setItem(storageKey, "1")
 
-    // Purchase básico.
-    // El valor real de la orden no está disponible en /thank-you
-    // con los parámetros actuales de Shopify.
     trackPurchase({
       transactionId: order,
-      value: 0,
-      currency: "USD",
+      value,
+      currency,
       items: [],
     })
 
     trackMetaEvent("Purchase", {
       content_type: "product",
-      value: 0,
-      currency: "USD",
+      value,
+      currency,
       order_id: order,
     })
-  }, [order])
+  }, [order, value, currency])
 
   return null
 }
