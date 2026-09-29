@@ -4,6 +4,8 @@ import { cleanAlt } from "@/lib/format";
 import { trackBeginCheckout } from "@/lib/analytics";
 
 import { trackMetaEvent } from "@/components/MetaPixel";
+import { useRegionRestricted } from "@/lib/use-region-restricted";
+import { REGION_RESTRICTED_MESSAGE } from "@/lib/region";
 
 function formatMoney(amount: string, currencyCode: string) {
   return new Intl.NumberFormat("en-US", {
@@ -14,6 +16,7 @@ function formatMoney(amount: string, currencyCode: string) {
 export function CartDrawer() {
   const { cart, isOpen, isLoading, closeCart, updateItem, removeItem } =
     useCart();
+  const regionRestricted = useRegionRestricted();
   const lines = cart?.lines.nodes ?? [];
   return (
     <>
@@ -122,38 +125,56 @@ export function CartDrawer() {
                 )}
               </span>
             </div>
-            <p className="mb-6 text-xs text-ink-soft">
+            <p className="mb-3 text-xs text-ink-soft">
               Taxes and shipping calculated at checkout.
             </p>
-            <a
-              href={cart.checkoutUrl}
-              onClick={() => {
-                const items = lines.map((line) => ({
-                  item_id: line.merchandise.id,
-                  item_name: line.merchandise.product.title,
-                  price: Number(line.merchandise.price.amount),
-                  quantity: line.quantity,
-                }));
 
-                const value = Number(cart.cost.subtotalAmount.amount);
-                const currency = cart.cost.subtotalAmount.currencyCode;
+            {regionRestricted && (
+              <p className="mb-4 border border-terracotta/40 bg-terracotta/10 px-4 py-3 text-xs leading-5 text-terracotta-deep">
+                {REGION_RESTRICTED_MESSAGE}
+              </p>
+            )}
 
-                // GA4
-                trackBeginCheckout(items, value, currency);
+            {regionRestricted ? (
+              <button
+                type="button"
+                disabled
+                title={REGION_RESTRICTED_MESSAGE}
+                className="block w-full cursor-not-allowed bg-terracotta/40 py-4 text-center text-sm font-semibold text-paper/80"
+              >
+                Checkout
+              </button>
+            ) : (
+              <a
+                href={cart.checkoutUrl}
+                onClick={() => {
+                  const items = lines.map((line) => ({
+                    item_id: line.merchandise.id,
+                    item_name: line.merchandise.product.title,
+                    price: Number(line.merchandise.price.amount),
+                    quantity: line.quantity,
+                  }));
 
-                // Meta
-                trackMetaEvent("InitiateCheckout", {
-                  content_ids: items.map((item) => item.item_id),
-                  content_type: "product",
-                  num_items: cart.totalQuantity,
-                  value,
-                  currency,
-                });
-              }}
-              className="block w-full bg-terracotta py-4 text-center text-sm font-semibold text-paper transition-colors hover:bg-terracotta-deep"
-            >
-              Checkout
-            </a>
+                  const value = Number(cart.cost.subtotalAmount.amount);
+                  const currency = cart.cost.subtotalAmount.currencyCode;
+
+                  // GA4
+                  trackBeginCheckout(items, value, currency);
+
+                  // Meta
+                  trackMetaEvent("InitiateCheckout", {
+                    content_ids: items.map((item) => item.item_id),
+                    content_type: "product",
+                    num_items: cart.totalQuantity,
+                    value,
+                    currency,
+                  });
+                }}
+                className="block w-full bg-terracotta py-4 text-center text-sm font-semibold text-paper transition-colors hover:bg-terracotta-deep"
+              >
+                Checkout
+              </a>
+            )}
           </div>
         )}
       </aside>

@@ -6,6 +6,8 @@ import { useCart } from "@/context/cart-context";
 import { cleanAlt } from "@/lib/format";
 import { trackMetaEvent } from "@/components/MetaPixel";
 import { trackAddToCart, trackViewItem } from "@/lib/analytics";
+import { useRegionRestricted } from "@/lib/use-region-restricted";
+import { REGION_RESTRICTED_MESSAGE } from "@/lib/region";
 
 function formatMoney(amount: string, currencyCode: string) {
   return new Intl.NumberFormat("en-US", {
@@ -16,14 +18,7 @@ function formatMoney(amount: string, currencyCode: string) {
 
 function ProductDescription({ description }: { description: string }) {
   const descriptionWithoutImages = useMemo(() => {
-    if (typeof window === "undefined") return description;
-
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(description, "text/html");
-
-    doc.querySelectorAll("img").forEach((img) => img.remove());
-
-    return doc.body.innerHTML;
+    return description.replace(/<img\b[^>]*>/gi, "");
   }, [description]);
 
   return (
@@ -75,6 +70,7 @@ function ProductDescription({ description }: { description: string }) {
 
 export function ProductDetail({ product }: { product: Product }) {
   const { addItem, isLoading } = useCart();
+  const regionRestricted = useRegionRestricted();
 
   /*
    * Images coming from Shopify's normal product gallery
@@ -176,7 +172,7 @@ export function ProductDetail({ product }: { product: Product }) {
   }, [product.id]);
 
   async function handleAdd() {
-    if (!variant) return;
+    if (!variant || regionRestricted) return;
 
     await addItem(variant.id, 1);
 
@@ -298,17 +294,27 @@ export function ProductDetail({ product }: { product: Product }) {
           </p>
         )}
 
+        {/* 3.5 REGION NOTICE */}
+        {regionRestricted && (
+          <p className="mt-4 border border-terracotta/40 bg-terracotta/10 px-4 py-3 text-xs leading-5 text-terracotta-deep">
+            {REGION_RESTRICTED_MESSAGE}
+          </p>
+        )}
+
         {/* 4. ADD TO BAG */}
         <button
           onClick={handleAdd}
-          disabled={isLoading || !variant?.availableForSale}
+          disabled={isLoading || !variant?.availableForSale || regionRestricted}
+          title={regionRestricted ? REGION_RESTRICTED_MESSAGE : undefined}
           className="mt-6 w-full bg-olive-deep py-4 text-sm text-paper transition-colors hover:bg-olive disabled:opacity-40 sm:w-auto sm:px-12"
         >
-          {!variant?.availableForSale
-            ? "Sold out"
-            : justAdded
-              ? "Added to bag"
-              : "Add to bag"}
+          {regionRestricted
+            ? "Not available in your region"
+            : !variant?.availableForSale
+              ? "Sold out"
+              : justAdded
+                ? "Added to bag"
+                : "Add to bag"}
         </button>
 
         {/* 5. DETAILS / SHIPPING & RETURNS / FAQ */}
