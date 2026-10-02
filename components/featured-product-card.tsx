@@ -1,8 +1,8 @@
 "use client"
 
 import type { Product } from "@/lib/shopify"
-import { useCart } from "@/context/cart-context"
 import { cleanAlt } from "@/lib/format"
+import { AddToBagButton } from "@/components/add-to-bag-button"
 
 function formatPrice(product: Product) {
   const { amount, currencyCode } = product.priceRange.minVariantPrice
@@ -19,7 +19,6 @@ function shortDescription(description: string, max = 78) {
 }
 
 export function FeaturedProductCard({ product }: { product: Product }) {
-  const { addItem, isLoading } = useCart()
   const firstVariant = product.variants.nodes[0]
   const secondaryImage = product.images?.nodes.find(
     (image) => image.url !== product.featuredImage?.url,
@@ -71,13 +70,12 @@ export function FeaturedProductCard({ product }: { product: Product }) {
         <div className="mt-4 flex items-center justify-between">
           <p className="text-sm text-ink">{formatPrice(product)}</p>
           {firstVariant && (
-            <button
-              className="text-[11px] font-semibold uppercase tracking-[.14em] text-terracotta transition-colors hover:text-terracotta-deep disabled:cursor-not-allowed disabled:text-ink-soft disabled:opacity-60"
-              disabled={isLoading || !firstVariant.availableForSale}
-              onClick={() => addItem(firstVariant.id, 1)}
-            >
-              {firstVariant.availableForSale ? "Add to bag" : "Sold out"}
-            </button>
+            <AddToBagButton
+              merchandiseId={firstVariant.id}
+              available={firstVariant.availableForSale}
+              label={product.title}
+              variant="text"
+            />
           )}
         </div>
       </div>

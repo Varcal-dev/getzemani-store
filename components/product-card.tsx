@@ -1,8 +1,8 @@
 "use client";
 
 import type { Product } from "@/lib/shopify";
-import { useCart } from "@/context/cart-context";
 import { cleanAlt } from "@/lib/format";
+import { AddToBagButton } from "@/components/add-to-bag-button";
 
 function formatPrice(product: Product) {
   const { amount, currencyCode } = product.priceRange.minVariantPrice;
@@ -19,10 +19,13 @@ export function ProductCard({
   product: Product;
   tagline?: string;
 }) {
-  const { addItem, isLoading } = useCart();
   const firstVariant =
     product.variants.nodes.find((v) => v.availableForSale) ??
     product.variants.nodes[0];
+  const secondaryImage = product.images?.nodes.find(
+    (image) => image.url !== product.featuredImage?.url,
+  );
+
   return (
     <article className="product-card group flex min-w-0 flex-col">
       <div className="relative">
@@ -32,28 +35,29 @@ export function ProductCard({
         >
           <div className="relative aspect-[4/5] overflow-hidden">
             <img
-              className="product-image h-full w-full object-cover"
+              className="product-image absolute inset-0 h-full w-full object-cover transition-opacity duration-500 group-hover:opacity-0"
               src={product.featuredImage?.url}
               alt={cleanAlt(product.featuredImage?.altText, product.title)}
               loading="lazy"
               width={product.featuredImage?.width}
               height={product.featuredImage?.height}
             />
+            {secondaryImage && (
+              <img
+                className="absolute inset-0 h-full w-full scale-[1.02] object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                src={secondaryImage.url}
+                alt={cleanAlt(secondaryImage.altText, product.title)}
+                loading="lazy"
+              />
+            )}
           </div>
         </a>
         {firstVariant && (
-          <button
-            className="quick-add absolute bottom-3 right-3 flex size-9 items-center justify-center rounded-full bg-terracotta text-xl leading-none text-paper transition-colors hover:bg-terracotta-deep disabled:cursor-not-allowed disabled:bg-ink-soft disabled:opacity-60"
-            disabled={isLoading || !firstVariant.availableForSale}
-            onClick={() => addItem(firstVariant.id, 1)}
-            aria-label={
-              firstVariant.availableForSale
-                ? `Add ${product.title} to bag`
-                : "Sold out"
-            }
-          >
-            {firstVariant.availableForSale ? "+" : "×"}
-          </button>
+          <AddToBagButton
+            merchandiseId={firstVariant.id}
+            available={firstVariant.availableForSale}
+            label={product.title}
+          />
         )}
       </div>
       <div className="pt-4">

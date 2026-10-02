@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 
+const SLIDE_DURATION = 5000;
+
 const slides = [
   {
     image: '/hero/ful_carru_sintex1.png',
@@ -72,14 +74,16 @@ const slides = [
 
 export function HeroCarousel() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
 
   useEffect(() => {
+    if (paused) return;
     const timer = window.setInterval(() => {
       setActiveIndex((current: number) => (current + 1) % slides.length);
-    }, 5000);
+    }, SLIDE_DURATION);
 
     return () => window.clearInterval(timer);
-  }, []);
+  }, [paused]);
 
   const goToSlide = (index: number) => {
     setActiveIndex(index);
@@ -99,6 +103,8 @@ export function HeroCarousel() {
     <section
       className="site-hero"
       aria-label="Featured campaign carousel"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
     >
       {slides.map((slide, index) => (
         <div
@@ -153,7 +159,17 @@ export function HeroCarousel() {
             aria-label={`Go to slide ${index + 1}`}
             onClick={() => goToSlide(index)}
             className={index === activeIndex ? 'is-active' : ''}
-          />
+          >
+            {index === activeIndex && (
+              <span
+                aria-hidden
+                className="hero-dot-progress"
+                data-paused={paused}
+                style={{ animationDuration: `${SLIDE_DURATION}ms` }}
+                key={activeIndex}
+              />
+            )}
+          </button>
         ))}
       </div>
     </section>

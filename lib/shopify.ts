@@ -102,6 +102,14 @@ const PRODUCT_CARD_FIELDS = `
     width
     height
   }
+  images(first: 2) {
+    nodes {
+      url
+      altText
+      width
+      height
+    }
+  }
   priceRange {
     minVariantPrice {
       amount

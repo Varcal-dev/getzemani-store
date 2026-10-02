@@ -125,6 +125,15 @@ button {
   object-fit: cover;
   filter: saturate(0.82) contrast(1.08) brightness(0.68);
 }
+/* Continuous slow drift while a slide is on screen -- restarts each time
+   is-active is re-applied, since removing the class removes the animation */
+@keyframes slow-zoom {
+  from { transform: scale(1); }
+  to { transform: scale(1.08); }
+}
+.hero-slide.is-active img {
+  animation: slow-zoom 9s ease-out forwards;
+}
 .hero-veil {
   position: absolute;
   inset: 0;
@@ -289,8 +298,10 @@ button {
   transform: translateX(-50%);
 }
 .hero-dots button {
+  position: relative;
   width: 0.6rem;
   height: 0.6rem;
+  overflow: hidden;
   border: none;
   border-radius: 999px;
   background: rgba(247, 244, 238, 0.48);
@@ -298,7 +309,23 @@ button {
 }
 .hero-dots button.is-active {
   width: 2.4rem;
+  background: rgba(247, 244, 238, 0.3);
+}
+@keyframes hero-dot-fill {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+.hero-dot-progress {
+  position: absolute;
+  inset: 0;
+  transform-origin: left center;
   background: var(--color-paper);
+  animation-name: hero-dot-fill;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+.hero-dot-progress[data-paused="true"] {
+  animation-play-state: paused;
 }
 .product-image {
   transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -313,6 +340,32 @@ button {
 }
 .product-card:hover .quick-add {
   transform: translateY(-2px);
+}
+
+/* Add-to-bag feedback -- each button animates on its own, not globally */
+@keyframes add-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(0.9); }
+}
+@keyframes add-pop {
+  0% { transform: scale(1); }
+  35% { transform: scale(1.22); }
+  65% { transform: scale(0.94); }
+  100% { transform: scale(1); }
+}
+.add-to-bag-icon[data-status="adding"] {
+  animation: add-pulse 0.7s ease-in-out infinite;
+}
+.add-to-bag-icon[data-status="added"] {
+  background-color: var(--color-olive-deep);
+  animation: add-pop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.add-to-bag-icon-glyph {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+.add-to-bag-text[data-status="added"] {
+  color: var(--color-olive-deep);
 }
 .tray {
   transition:
