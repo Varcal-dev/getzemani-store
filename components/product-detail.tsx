@@ -8,6 +8,7 @@ import { trackMetaEvent } from "@/components/MetaPixel";
 import { trackAddToCart, trackViewItem } from "@/lib/analytics";
 import { useRegionRestricted } from "@/lib/use-region-restricted";
 import { REGION_RESTRICTED_MESSAGE } from "@/lib/region";
+import { toCatalogContentId } from "@/lib/meta-ids";
 
 function formatMoney(amount: string, currencyCode: string) {
   return new Intl.NumberFormat("en-US", {
@@ -149,7 +150,7 @@ export function ProductDetail({ product }: { product: Product }) {
 
     // Meta
     trackMetaEvent("ViewContent", {
-      content_ids: [product.id],
+      content_ids: [toCatalogContentId(variant?.id ?? product.id)],
       content_type: "product",
       content_name: product.title,
       value: price,
@@ -181,7 +182,7 @@ export function ProductDetail({ product }: { product: Product }) {
 
     // Meta
     trackMetaEvent("AddToCart", {
-      content_ids: [variant.id],
+      content_ids: [toCatalogContentId(variant.id)],
       content_type: "product",
       content_name: product.title,
       value: price,

@@ -15,15 +15,24 @@ type MetaEventPayload = {
     email?: string;
     phone?: string;
     fbp?: string; // cookie _fbp del navegador
-    fbc?: string; // cookie _fbc del navegador (o fbclid de la URL)
+    fbc?: string; // cookie _fbc del navegador (o fbclid de la URL, vía middleware)
+    externalId?: string; // cookie ge_eid: id anónimo propio, respaldo si fbp/fbc faltan
   };
 };
+
+async function sha256(value: string): Promise<string> {
+  const data = new TextEncoder().encode(value.trim().toLowerCase());
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  return Array.from(new Uint8Array(hashBuffer))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
 
 export async function POST(req: NextRequest) {
   if (!PIXEL_ID || !ACCESS_TOKEN) {
     return NextResponse.json(
       { error: "Meta CAPI no está configurado (faltan variables de entorno)." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 
@@ -34,7 +43,7 @@ export async function POST(req: NextRequest) {
     if (!eventName || !eventId || !eventSourceUrl) {
       return NextResponse.json(
         { error: "Faltan campos requeridos: eventName, eventId, eventSourceUrl." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -44,6 +53,10 @@ export async function POST(req: NextRequest) {
       req.headers.get("x-real-ip") ??
       undefined;
     const userAgent = req.headers.get("user-agent") ?? undefined;
+
+    const hashedExternalId = userData?.externalId
+      ? await sha256(userData.externalId)
+      : undefined;
 
     const payload = {
       data: [
@@ -58,6 +71,8 @@ export async function POST(req: NextRequest) {
             client_user_agent: userAgent,
             fbp: userData?.fbp,
             fbc: userData?.fbc,
+            // Respaldo: siempre viaja, aunque fbp/fbc no hayan llegado a tiempo.
+            ...(hashedExternalId ? { external_id: [hashedExternalId] } : {}),
             // email/phone deben llegar ya hasheados en SHA256 si se envían
             ...(userData?.email ? { em: [userData.email] } : {}),
             ...(userData?.phone ? { ph: [userData.phone] } : {}),
@@ -73,7 +88,7 @@ export async function POST(req: NextRequest) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
-      }
+      },
     );
 
     const result = await res.json();
@@ -88,7 +103,7 @@ export async function POST(req: NextRequest) {
     console.error("Error enviando evento a Meta CAPI:", err);
     return NextResponse.json(
       { error: "Error interno procesando el evento." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -35,7 +35,7 @@ export default function MetaPixel() {
   if (!PIXEL_ID) {
     if (process.env.NODE_ENV !== "production") {
       console.warn(
-        "NEXT_PUBLIC_META_PIXEL_ID no está definido — el Meta Pixel no se cargará."
+        "NEXT_PUBLIC_META_PIXEL_ID no está definido — el Meta Pixel no se cargará.",
       );
     }
     return null;
@@ -78,12 +78,18 @@ export default function MetaPixel() {
  * Dispara un evento tanto en el Pixel del navegador como en la Conversions API
  * (server-side), usando el mismo event_id para que Meta los deduplique.
  *
+ * userData incluye, además de fbp/fbc, un `externalId` propio (cookie
+ * `ge_eid`, puesta por el middleware) para que siempre haya al menos un
+ * identificador fuerte en el evento, aunque fbp/fbc todavía no existan
+ * (por ejemplo, si el evento se dispara antes de que fbevents.js termine
+ * de cargar).
+ *
  * Uso:
- *   trackMetaEvent("ViewContent", { content_ids: [handle], content_type: "product", value, currency: "USD" })
+ *   trackMetaEvent("ViewContent", { content_ids: [numericId], content_type: "product", value, currency: "USD" })
  */
 export function trackMetaEvent(
   eventName: string,
-  customData?: Record<string, unknown>
+  customData?: Record<string, unknown>,
 ) {
   const eventId =
     typeof crypto !== "undefined" && "randomUUID" in crypto
@@ -99,6 +105,7 @@ export function trackMetaEvent(
   if (typeof window !== "undefined") {
     const fbp = getCookie("_fbp");
     const fbc = getCookie("_fbc");
+    const externalId = getCookie("ge_eid");
 
     fetch("/api/meta-events", {
       method: "POST",
@@ -108,7 +115,7 @@ export function trackMetaEvent(
         eventId,
         eventSourceUrl: window.location.href,
         customData,
-        userData: { fbp, fbc },
+        userData: { fbp, fbc, externalId },
       }),
       // no bloquea la navegación si falla
       keepalive: true,
@@ -120,6 +127,9 @@ export function trackMetaEvent(
 
 function getCookie(name: string): string | undefined {
   if (typeof document === "undefined") return undefined;
+  // _fbc y ge_eid no llevan caracteres que necesiten decodificarse; evitamos
+  // decodeURIComponent aquí a propósito para no arriesgarnos a alterar el
+  // fbclid si alguna vez contiene un "%" literal.
   const match = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`));
-  return match ? decodeURIComponent(match[1]) : undefined;
+  return match ? match[1] : undefined;
 }

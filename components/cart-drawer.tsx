@@ -6,6 +6,7 @@ import { trackBeginCheckout } from "@/lib/analytics";
 import { trackMetaEvent } from "@/components/MetaPixel";
 import { useRegionRestricted } from "@/lib/use-region-restricted";
 import { REGION_RESTRICTED_MESSAGE } from "@/lib/region";
+import { toCatalogContentId } from "@/lib/meta-ids";
 
 function formatMoney(amount: string, currencyCode: string) {
   return new Intl.NumberFormat("en-US", {
@@ -163,7 +164,9 @@ export function CartDrawer() {
 
                   // Meta
                   trackMetaEvent("InitiateCheckout", {
-                    content_ids: items.map((item) => item.item_id),
+                    content_ids: items.map((item) =>
+                      toCatalogContentId(item.item_id),
+                    ),
                     content_type: "product",
                     num_items: cart.totalQuantity,
                     value,
