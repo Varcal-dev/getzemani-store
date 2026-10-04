@@ -467,3 +467,15 @@ button {
 .product-description a {
   text-decoration: underline;
 }
+
+details { interpolate-size: allow-keywords; }
+details::details-content {
+  block-size: 0;
+  overflow: hidden;
+  transition: block-size 0.35s cubic-bezier(0.2, 0.7, 0.2, 1),
+              content-visibility 0.35s allow-discrete;
+}
+details[open]::details-content { block-size: auto; }
+@media (prefers-reduced-motion: reduce) {
+  details::details-content { transition: none; }
+}

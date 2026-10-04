@@ -13,6 +13,8 @@ type CartContextValue = {
   openCart: () => void
   closeCart: () => void
   addItem: (merchandiseId: string, quantity?: number) => Promise<void>
+  /** Agrega el producto al carrito SIN abrir el drawer y devuelve la URL de checkout. */
+  buyNow: (merchandiseId: string, quantity?: number) => Promise<string>
   updateItem: (lineId: string, quantity: number) => Promise<void>
   removeItem: (lineId: string) => Promise<void>
 }
@@ -48,6 +50,17 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }, [cart?.id, persist])
 
+  const buyNow = useCallback(async (merchandiseId: string, quantity = 1) => {
+    setIsLoading(true)
+    try {
+      const next = await addToCartAction(cart?.id ?? null, merchandiseId, quantity)
+      persist(next)
+      return next.checkoutUrl
+    } finally {
+      setIsLoading(false)
+    }
+  }, [cart?.id, persist])
+
   const updateItem = useCallback(async (lineId: string, quantity: number) => {
     if (!cart) return
     setIsLoading(true)
@@ -74,8 +87,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     cart, isOpen, isLoading,
     openCart: () => setIsOpen(true),
     closeCart: () => setIsOpen(false),
-    addItem, updateItem, removeItem,
-  }), [cart, isOpen, isLoading, addItem, updateItem, removeItem])
+    addItem, buyNow, updateItem, removeItem,
+  }), [cart, isOpen, isLoading, addItem, buyNow, updateItem, removeItem])
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>
 }
